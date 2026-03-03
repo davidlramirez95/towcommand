@@ -14,8 +14,10 @@ type contextKey string
 const (
 	// CorrelationIDKey is the context key for correlation IDs.
 	CorrelationIDKey contextKey = "correlation_id"
-	BookingIDKey     contextKey = "booking_id"
-	UserIDKey        contextKey = "user_id"
+	// BookingIDKey is the context key for booking IDs.
+	BookingIDKey contextKey = "booking_id"
+	// UserIDKey is the context key for user IDs.
+	UserIDKey contextKey = "user_id"
 )
 
 // New creates a configured slog.Logger with JSON output to stdout.
