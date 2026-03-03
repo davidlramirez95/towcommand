@@ -7,118 +7,95 @@ on:
     branches: [main]
 
 env:
-  NODE_VERSION: '20'
-  PNPM_VERSION: '9'
+  GO_VERSION: "1.23"
+
+permissions:
+  contents: read
 
 jobs:
-  lint-and-typecheck:
-    name: Lint & Type Check
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-go@v5
         with:
-          version: ${{ env.PNPM_VERSION }}
-      - uses: actions/setup-node@v4
+          go-version: ${{ env.GO_VERSION }}
+      - name: Install Task
+        run: go install github.com/go-task/task/v3/cmd/task@latest
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run lint
-      - run: pnpm run typecheck
+          version: latest
 
-  unit-tests:
-    name: Unit Tests
+  test:
+    name: Test
+    needs: [lint]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-go@v5
         with:
-          version: ${{ env.PNPM_VERSION }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run build
-      - run: pnpm run test:unit -- --coverage
-      - uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
+          go-version: ${{ env.GO_VERSION }}
+      - name: Install Task
+        run: go install github.com/go-task/task/v3/cmd/task@latest
+      - name: Run unit tests
+        run: task test:unit
 
-  integration-tests:
-    name: Integration Tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    services:
-      localstack:
-        image: localstack/localstack:3.0
-        ports:
-          - 4566:4566
-        env:
-          SERVICES: dynamodb,s3,sqs,sns,eventbridge
-          DEFAULT_REGION: ap-southeast-1
-      redis:
-        image: redis:7-alpine
-        ports:
-          - 6379:6379
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: ${{ env.PNPM_VERSION }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run build
-      - run: pnpm run test:integration
-        env:
-          DYNAMODB_ENDPOINT: http://localhost:4566
-          REDIS_HOST: localhost
-          REDIS_PORT: 6379
-          AWS_REGION: ap-southeast-1
-
-  security-scan:
+  security:
     name: Security Scan
+    needs: [lint]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-go@v5
         with:
-          version: ${{ env.PNPM_VERSION }}
-      - uses: actions/setup-node@v4
+          go-version: ${{ env.GO_VERSION }}
+      - name: Install govulncheck
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - name: Run govulncheck
+        run: govulncheck ./...
+
+  build:
+    name: Build
+    needs: [test, security]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm audit --audit-level=high || true
+          go-version: ${{ env.GO_VERSION }}
+      - name: Install Task
+        run: go install github.com/go-task/task/v3/cmd/task@latest
+      - name: Verify modules
+        run: go mod tidy && go mod verify
+      - name: Build all binaries
+        run: task build
 
   deploy-dev:
     name: Deploy to Dev
-    needs: [lint-and-typecheck, unit-tests, integration-tests]
+    needs: [build]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: dev
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-go@v5
         with:
-          version: ${{ env.PNPM_VERSION }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          go-version: ${{ env.GO_VERSION }}
+      - name: Install Task
+        run: go install github.com/go-task/task/v3/cmd/task@latest
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ap-southeast-1
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run build
-      - run: bash scripts/deploy.sh dev
+      - name: Deploy to dev
+        run: task deploy:dev

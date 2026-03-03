@@ -4,28 +4,48 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - 'v*-rc*'
+      - "v*-rc*"
+
+env:
+  GO_VERSION: "1.23"
+
+permissions:
+  contents: read
 
 jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Install Task
+        run: go install github.com/go-task/task/v3/cmd/task@latest
+      - name: Run unit tests
+        run: task test:unit
+
   deploy:
     name: Deploy to Staging
+    needs: [test]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: staging
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-go@v5
         with:
-          version: '9'
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
+          go-version: ${{ env.GO_VERSION }}
+      - name: Install Task
+        run: go install github.com/go-task/task/v3/cmd/task@latest
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ap-southeast-1
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run build
-      - run: pnpm run test:unit
-      - run: bash scripts/deploy.sh staging
+      - name: Deploy to staging
+        run: task deploy:staging

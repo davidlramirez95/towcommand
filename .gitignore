@@ -39,3 +39,9 @@ legacy/node_modules/
 
 # Exclude gutguard-ai project
 gutguard-ai/
+
+# Go
+bin/
+bootstrap
+*.exe
+vendor/
