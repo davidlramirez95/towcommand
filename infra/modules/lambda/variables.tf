@@ -6,7 +6,7 @@ variable "environment" {
 variable "lambda_memory" {
   description = "Memory allocated to Lambda functions"
   type        = number
-  default     = 512
+  default     = 256
 }
 
 variable "dynamodb_table_name" {
@@ -51,11 +51,6 @@ variable "sos_service_zip" {
 
 variable "authorizer_zip" {
   description = "Path to authorizer ZIP file"
-  type        = string
-}
-
-variable "shared_layer_zip" {
-  description = "Path to shared layer ZIP file"
   type        = string
 }
 

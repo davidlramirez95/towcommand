@@ -131,7 +131,6 @@ module "lambda" {
   payment_service_zip    = var.payment_service_zip
   sos_service_zip        = var.sos_service_zip
   authorizer_zip         = var.authorizer_zip
-  shared_layer_zip       = var.shared_layer_zip
   # TODO: Uncomment when ElastiCache is enabled
   # redis_endpoint         = module.elasticache.redis_endpoint
   # rds_endpoint           = module.rds.cluster_endpoint

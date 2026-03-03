@@ -89,11 +89,6 @@ variable "authorizer_zip" {
   type        = string
 }
 
-variable "shared_layer_zip" {
-  description = "Path to shared layer ZIP"
-  type        = string
-}
-
 # Monitoring
 variable "alert_email" {
   description = "Email for alerts"

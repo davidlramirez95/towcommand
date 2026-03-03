@@ -3,13 +3,12 @@ resource "aws_lambda_function" "booking_service" {
   filename         = var.booking_service_zip
   function_name    = "towcommand-booking-${var.environment}"
   role             = aws_iam_role.lambda_booking.arn
-  handler          = "index.handler"
-  runtime          = "nodejs.20.x"
+  handler          = "bootstrap"
+  runtime          = "provided.al2023"
   architectures    = ["arm64"]
   timeout          = 30
   memory_size      = var.lambda_memory
-
-  layers = [aws_lambda_layer_version.shared.arn]
+  source_code_hash = filebase64sha256(var.booking_service_zip)
 
   environment {
     variables = {
@@ -34,13 +33,12 @@ resource "aws_lambda_function" "provider_service" {
   filename         = var.provider_service_zip
   function_name    = "towcommand-provider-${var.environment}"
   role             = aws_iam_role.lambda_provider.arn
-  handler          = "index.handler"
-  runtime          = "nodejs.20.x"
+  handler          = "bootstrap"
+  runtime          = "provided.al2023"
   architectures    = ["arm64"]
   timeout          = 30
   memory_size      = var.lambda_memory
-
-  layers = [aws_lambda_layer_version.shared.arn]
+  source_code_hash = filebase64sha256(var.provider_service_zip)
 
   environment {
     variables = {
@@ -65,13 +63,12 @@ resource "aws_lambda_function" "payment_service" {
   filename         = var.payment_service_zip
   function_name    = "towcommand-payment-${var.environment}"
   role             = aws_iam_role.lambda_payment.arn
-  handler          = "index.handler"
-  runtime          = "nodejs.20.x"
+  handler          = "bootstrap"
+  runtime          = "provided.al2023"
   architectures    = ["arm64"]
   timeout          = 30
   memory_size      = var.lambda_memory
-
-  layers = [aws_lambda_layer_version.shared.arn]
+  source_code_hash = filebase64sha256(var.payment_service_zip)
 
   environment {
     variables = {
@@ -96,13 +93,12 @@ resource "aws_lambda_function" "sos_service" {
   filename         = var.sos_service_zip
   function_name    = "towcommand-sos-${var.environment}"
   role             = aws_iam_role.lambda_sos.arn
-  handler          = "index.handler"
-  runtime          = "nodejs.20.x"
+  handler          = "bootstrap"
+  runtime          = "provided.al2023"
   architectures    = ["arm64"]
   timeout          = 30
   memory_size      = var.lambda_memory
-
-  layers = [aws_lambda_layer_version.shared.arn]
+  source_code_hash = filebase64sha256(var.sos_service_zip)
 
   environment {
     variables = {
@@ -127,13 +123,12 @@ resource "aws_lambda_function" "authorizer" {
   filename         = var.authorizer_zip
   function_name    = "towcommand-authorizer-${var.environment}"
   role             = aws_iam_role.lambda_authorizer.arn
-  handler          = "index.handler"
-  runtime          = "nodejs.20.x"
+  handler          = "bootstrap"
+  runtime          = "provided.al2023"
   architectures    = ["arm64"]
   timeout          = 5
-  memory_size      = 256
-
-  layers = [aws_lambda_layer_version.shared.arn]
+  memory_size      = 128
+  source_code_hash = filebase64sha256(var.authorizer_zip)
 
   environment {
     variables = {

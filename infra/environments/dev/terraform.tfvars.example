@@ -36,16 +36,15 @@ db_instance_count      = 1
 db_max_connections     = "100"
 db_backup_retention    = 7
 
-# Lambda
-lambda_memory = 512
+# Lambda (Go binaries need less memory than Node.js)
+lambda_memory = 256
 
-# Lambda Deployment Packages (paths to ZIP files)
+# Lambda Deployment Packages (paths to ZIP files containing Go bootstrap binary)
 booking_service_zip  = "./packages/booking-service.zip"
 provider_service_zip = "./packages/provider-service.zip"
 payment_service_zip  = "./packages/payment-service.zip"
 sos_service_zip      = "./packages/sos-service.zip"
 authorizer_zip       = "./packages/authorizer.zip"
-shared_layer_zip     = "./packages/shared-layer.zip"
 
 # Monitoring
 alert_email        = "your-email@example.com"
