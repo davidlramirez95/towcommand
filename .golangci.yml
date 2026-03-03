@@ -28,6 +28,7 @@ linters-settings:
       - name: error-return
       - name: error-strings
       - name: exported
+        disabled: true
       - name: increment-decrement
       - name: var-naming
       - name: package-comments
