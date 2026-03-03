@@ -25,7 +25,7 @@ tasks:
       - go.sum
 
   build-func:
-    desc: Build a single function (usage: task build-func FUNC=myhandler)
+    desc: "Build a single function (usage: task build-func FUNC=myhandler)"
     requires:
       vars: [FUNC]
     cmds:
