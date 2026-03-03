@@ -1,0 +1,18 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.local
+.env.*.local
+*.tsbuildinfo
+.turbo
+.DS_Store
+*.log
+.localstack/
+terraform.tfstate*
+.terraform/
+*.tfvars
+!*.tfvars.example
+
+# Exclude gutguard-ai project
+gutguard-ai/

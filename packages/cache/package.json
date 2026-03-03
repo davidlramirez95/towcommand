@@ -1,0 +1,20 @@
+{
+  "name": "@towcommand/cache",
+  "version": "1.0.0",
+  "description": "Redis/ElastiCache wrapper for TowCommand",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@towcommand/core": "workspace:*",
+    "ioredis": "^5.3.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

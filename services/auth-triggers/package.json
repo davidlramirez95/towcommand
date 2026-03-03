@@ -1,0 +1,22 @@
+{
+  "name": "@towcommand/services-auth-triggers",
+  "version": "1.0.0",
+  "description": "Cognito auth trigger Lambda handlers for TowCommand",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@towcommand/core": "workspace:*",
+    "@towcommand/db": "workspace:*",
+    "@aws-sdk/client-dynamodb": "^3.461.0",
+    "pino": "^8.17.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

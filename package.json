@@ -1,0 +1,41 @@
+{
+  "name": "towcommand-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TowCommand PH — Serverless Backend Monorepo",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "test:unit": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
+    "test:e2e": "vitest run --project e2e",
+    "typecheck": "turbo typecheck",
+    "clean": "turbo clean && rm -rf node_modules",
+    "db:seed": "tsx scripts/seed-db.ts",
+    "db:migrate": "tsx packages/db/src/migrations/v1-create-table.ts",
+    "local:up": "docker-compose up -d",
+    "local:down": "docker-compose down",
+    "local:setup": "bash scripts/local-setup.sh",
+    "deploy:dev": "bash scripts/deploy.sh dev",
+    "deploy:staging": "bash scripts/deploy.sh staging",
+    "deploy:prod": "bash scripts/deploy.sh prod",
+    "events:docs": "tsx scripts/generate-event-docs.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "turbo": "^2.3.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.1.0",
+    "tsx": "^4.19.0",
+    "eslint": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "prettier": "^3.4.0"
+  }
+}

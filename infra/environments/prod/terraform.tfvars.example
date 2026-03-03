@@ -1,0 +1,59 @@
+environment = "prod"
+aws_region  = "us-east-1"
+
+# VPC Configuration
+vpc_cidr                = "10.2.0.0/16"
+public_subnet_cidrs     = ["10.2.1.0/24", "10.2.2.0/24", "10.2.3.0/24"]
+private_subnet_cidrs    = ["10.2.10.0/24", "10.2.11.0/24", "10.2.12.0/24"]
+availability_zones      = ["us-east-1a", "us-east-1b", "us-east-1c"]
+
+# DynamoDB
+dynamodb_billing_mode = "PROVISIONED"
+
+# API Gateway
+api_throttle_burst_limit        = 10000
+api_throttle_rate_limit         = 5000
+websocket_throttle_burst_limit  = 10000
+websocket_throttle_rate_limit   = 5000
+
+# Redis/ElastiCache
+redis_node_type         = "cache.r6g.xlarge"
+redis_num_nodes         = 3
+redis_engine_version    = "7.0"
+redis_automatic_failover = true
+redis_multi_az          = true
+redis_transit_encryption = true
+redis_auth_token        = "" # Set this in your terraform.tfvars
+redis_snapshot_retention = 35
+
+# RDS Configuration
+db_name                = "towcommand"
+db_master_username     = "admin"
+db_master_password     = "" # Set this in your terraform.tfvars
+db_engine_version      = "15.2"
+db_instance_class      = "db.r6g.xlarge"
+db_instance_count      = 3
+db_max_connections     = "500"
+db_backup_retention    = 35
+
+# Lambda
+lambda_memory = 1024
+
+# Lambda Deployment Packages
+booking_service_zip  = "./packages/booking-service.zip"
+provider_service_zip = "./packages/provider-service.zip"
+payment_service_zip  = "./packages/payment-service.zip"
+sos_service_zip      = "./packages/sos-service.zip"
+authorizer_zip       = "./packages/authorizer.zip"
+shared_layer_zip     = "./packages/shared-layer.zip"
+
+# Monitoring
+alert_email        = "your-email@example.com"
+log_retention_days = 365
+
+# Tags
+tags = {
+  CostCenter = "Engineering"
+  Owner      = "Platform Team"
+  Application = "TowCommand"
+}

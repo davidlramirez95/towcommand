@@ -1,0 +1,23 @@
+{
+  "name": "@towcommand/auth",
+  "version": "1.0.0",
+  "description": "Cognito authentication helpers and middleware for TowCommand",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@towcommand/core": "workspace:*",
+    "@aws-sdk/client-cognito-identity-provider": "^3.461.0",
+    "jsonwebtoken": "^9.1.2",
+    "jwks-rsa": "^3.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/jsonwebtoken": "^9.0.7"
+  }
+}

@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  localstack:
+    image: localstack/localstack:3.0
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    environment:
+      - SERVICES=dynamodb,s3,sqs,sns,eventbridge,lambda,apigateway,cognito-idp,secretsmanager,ssm
+      - DEBUG=0
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - DEFAULT_REGION=ap-southeast-1
+    volumes:
+      - "${TMPDIR:-/tmp}/localstack:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - towcommand
+
+  # TODO: Uncomment when feature is ready and budget allows (not serverless - costs money on AWS)
+  # redis:
+  #   image: redis:7-alpine
+  #   ports:
+  #     - "6379:6379"
+  #   command: redis-server --requirepass localredis
+  #   volumes:
+  #     - redis_data:/data
+  #   networks:
+  #     - towcommand
+  #
+  # postgres:
+  #   image: postgres:16-alpine
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     - POSTGRES_DB=towcommand_analytics
+  #     - POSTGRES_USER=towcommand
+  #     - POSTGRES_PASSWORD=localpassword
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - towcommand
+  #
+  # redis-commander:
+  #   image: rediscommander/redis-commander:latest
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     - REDIS_HOSTS=local:redis:6379:0:localredis
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - towcommand
+
+networks:
+  towcommand:
+    driver: bridge
+
+# TODO: Uncomment when Redis/PostgreSQL services are enabled
+# volumes:
+#   redis_data:
+#   postgres_data:

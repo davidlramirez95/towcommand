@@ -1,0 +1,24 @@
+{
+  "name": "@towcommand/services-notifications",
+  "version": "1.0.0",
+  "description": "Notification service for TowCommand",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@towcommand/core": "workspace:*",
+    "@towcommand/events": "workspace:*",
+    "@aws-sdk/client-sns": "^3.461.0",
+    "@aws-sdk/client-ses": "^3.461.0",
+    "@aws-sdk/client-pinpoint": "^3.461.0",
+    "pino": "^8.17.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
