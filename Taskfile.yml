@@ -24,8 +24,8 @@ tasks:
       - go.mod
       - go.sum
 
-  build:func:
-    desc: Build a single function (usage: task build:func FUNC=myhandler)
+  build-func:
+    desc: Build a single function (usage: task build-func FUNC=myhandler)
     requires:
       vars: [FUNC]
     cmds:
@@ -33,17 +33,17 @@ tasks:
         GOOS={{.GOOS}} GOARCH={{.GOARCH}} CGO_ENABLED={{.CGO_ENABLED}} \
           go build {{.BUILD_FLAGS}} -o {{.BIN_DIR}}/{{.FUNC}}/bootstrap ./cmd/{{.FUNC}}/
 
-  test:unit:
+  test-unit:
     desc: Run unit tests
     cmds:
       - go test -short -count=1 -race ./...
 
-  test:integration:
+  test-integration:
     desc: Run integration tests (requires local services)
     cmds:
       - go test -run Integration -count=1 -race ./...
 
-  test:all:
+  test-all:
     desc: Run all tests
     cmds:
       - go test -count=1 -race ./...
@@ -69,33 +69,33 @@ tasks:
           (cd "$dir" && zip "../$func.zip" bootstrap)
         done
 
-  deploy:dev:
+  deploy-dev:
     desc: Deploy to dev environment
     deps: [package]
     cmds:
       - echo "Deploying to dev..."
       - bash scripts/deploy.sh dev
 
-  deploy:staging:
+  deploy-staging:
     desc: Deploy to staging environment
     deps: [package]
     cmds:
       - echo "Deploying to staging..."
       - bash scripts/deploy.sh staging
 
-  deploy:prod:
+  deploy-prod:
     desc: Deploy to production environment
     deps: [package]
     cmds:
       - echo "Deploying to prod..."
       - bash scripts/deploy.sh prod
 
-  local:up:
+  local-up:
     desc: Start local development services (LocalStack, Redis)
     cmds:
       - docker-compose up -d
 
-  local:down:
+  local-down:
     desc: Stop local development services
     cmds:
       - docker-compose down
@@ -106,7 +106,7 @@ tasks:
       - rm -rf {{.BIN_DIR}}
       - go clean -cache -testcache
 
-  mod:tidy:
+  mod-tidy:
     desc: Tidy and verify Go modules
     cmds:
       - go mod tidy
