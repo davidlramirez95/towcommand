@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/david.ramirez/Downloads/towcommand/.claude/metadata-updater.sh",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  }
+}
