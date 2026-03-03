@@ -5,9 +5,20 @@
 // via errors.Is and errors.As.
 package errors
 
-import (
-	"fmt"
-	"net/http"
+import "fmt"
+
+// HTTP status codes used for error-to-status mapping.
+// Defined as constants to avoid importing net/http in the domain layer.
+const (
+	statusBadRequest          = 400
+	statusUnauthorized        = 401
+	statusForbidden           = 403
+	statusNotFound            = 404
+	statusConflict            = 409
+	statusTooManyRequests     = 429
+	statusInternalServerError = 500
+	statusBadGateway          = 502
+	statusServiceUnavailable  = 503
 )
 
 // ErrorCode categorises domain errors.
@@ -56,22 +67,22 @@ const (
 
 // httpStatusMap maps each ErrorCode to an HTTP status code.
 var httpStatusMap = map[ErrorCode]int{
-	CodeValidationError:          http.StatusBadRequest,          // 400
-	CodeNotFound:                 http.StatusNotFound,            // 404
-	CodeUnauthorized:             http.StatusUnauthorized,        // 401
-	CodeForbidden:                http.StatusForbidden,           // 403
-	CodeConflict:                 http.StatusConflict,            // 409
-	CodeRateLimited:              http.StatusTooManyRequests,     // 429
-	CodeInternalError:            http.StatusInternalServerError, // 500
-	CodeExternalService:          http.StatusBadGateway,          // 502
-	CodeInvalidStatusTransition:  http.StatusConflict,            // 409
-	CodeBookingNotCancellable:    http.StatusConflict,            // 409
-	CodeProviderUnavailable:      http.StatusServiceUnavailable,  // 503
-	CodePaymentFailed:            http.StatusBadGateway,          // 502
-	CodeOTPExpired:               http.StatusBadRequest,          // 400
-	CodeOTPInvalid:               http.StatusBadRequest,          // 400
-	CodeEvidenceValidationFailed: http.StatusBadRequest,          // 400
-	CodeSOSActive:                http.StatusConflict,            // 409
+	CodeValidationError:          statusBadRequest,
+	CodeNotFound:                 statusNotFound,
+	CodeUnauthorized:             statusUnauthorized,
+	CodeForbidden:                statusForbidden,
+	CodeConflict:                 statusConflict,
+	CodeRateLimited:              statusTooManyRequests,
+	CodeInternalError:            statusInternalServerError,
+	CodeExternalService:          statusBadGateway,
+	CodeInvalidStatusTransition:  statusConflict,
+	CodeBookingNotCancellable:    statusConflict,
+	CodeProviderUnavailable:      statusServiceUnavailable,
+	CodePaymentFailed:            statusBadGateway,
+	CodeOTPExpired:               statusBadRequest,
+	CodeOTPInvalid:               statusBadRequest,
+	CodeEvidenceValidationFailed: statusBadRequest,
+	CodeSOSActive:                statusConflict,
 }
 
 // AppError is the domain error type used throughout the application.
@@ -103,7 +114,7 @@ func (e *AppError) HTTPStatusCode() int {
 	if status, ok := httpStatusMap[e.Code]; ok {
 		return status
 	}
-	return http.StatusInternalServerError
+	return statusInternalServerError
 }
 
 // Unwrap returns the underlying cause, enabling errors.Unwrap.
