@@ -1,18 +1,41 @@
-node_modules/
-dist/
-coverage/
+# Go build output
+/dist/
+*.test
+coverage.out
+coverage.html
+
+# Go binaries
+bootstrap
+*.exe
+
+# Go vendor (if used)
+# vendor/
+
+# Environment
 .env
 .env.local
 .env.*.local
-*.tsbuildinfo
-.turbo
+
+# IDE
 .DS_Store
-*.log
-.localstack/
+.idea/
+*.swp
+*.swo
+
+# Infrastructure
 terraform.tfstate*
 .terraform/
 *.tfvars
 !*.tfvars.example
+
+# LocalStack
+.localstack/
+
+# Logs
+*.log
+
+# Legacy Node.js (preserved in legacy/ for reference)
+legacy/node_modules/
 
 # Exclude gutguard-ai project
 gutguard-ai/
