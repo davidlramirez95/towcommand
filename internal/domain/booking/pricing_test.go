@@ -10,8 +10,8 @@ import (
 )
 
 // pht returns a time.Time in Asia/Manila (UTC+8).
-func pht(year, month, day, hour, min int) time.Time {
-	return time.Date(year, time.Month(month), day, hour, min, 0, 0, manilaLoc)
+func pht(year, month, day, hour, minute int) time.Time {
+	return time.Date(year, time.Month(month), day, hour, minute, 0, 0, manilaLoc)
 }
 
 // --- IsNightTime ---
@@ -230,7 +230,7 @@ func TestCalculateEstimate(t *testing.T) {
 			surgeMultiplier: 1.0,
 			want: PriceBreakdown{
 				Base:     180_000,
-				Distance: 220_000, // ceil(10.1) = 11
+				Distance: 220_000, // 10.1 km rounds up to 11 km
 				Total:    400_000,
 				Currency: "PHP",
 			},
@@ -415,10 +415,10 @@ func TestCalculateFinalPrice(t *testing.T) {
 
 func TestCalculateCancellationFee(t *testing.T) {
 	tests := []struct {
-		name     string
-		status   BookingStatus
-		distKm   float64
-		wantFee  int64
+		name    string
+		status  BookingStatus
+		distKm  float64
+		wantFee int64
 	}{
 		{"pending", BookingStatusPending, 0, 0},
 		{"matched", BookingStatusMatched, 10, 10_000},

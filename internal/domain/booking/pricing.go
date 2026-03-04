@@ -18,11 +18,11 @@ type pricingTier struct {
 
 // MMDA Regulation 24-004 towing rates in centavos.
 var mmdaRates = map[user.WeightClass]pricingTier{
-	user.WeightClassMotorcycle:  {baseRate: 80_000, perKmRate: 10_000},
-	user.WeightClassLight:       {baseRate: 180_000, perKmRate: 20_000},
-	user.WeightClassMedium:      {baseRate: 300_000, perKmRate: 25_000},
-	user.WeightClassHeavy:       {baseRate: 500_000, perKmRate: 35_000},
-	user.WeightClassSuperHeavy:  {baseRate: 800_000, perKmRate: 50_000},
+	user.WeightClassMotorcycle: {baseRate: 80_000, perKmRate: 10_000},
+	user.WeightClassLight:      {baseRate: 180_000, perKmRate: 20_000},
+	user.WeightClassMedium:     {baseRate: 300_000, perKmRate: 25_000},
+	user.WeightClassHeavy:      {baseRate: 500_000, perKmRate: 35_000},
+	user.WeightClassSuperHeavy: {baseRate: 800_000, perKmRate: 50_000},
 }
 
 // Roadside service flat rates in centavos.
@@ -37,13 +37,13 @@ const (
 	nightSurchargeRate   = 0.30 // +30 % of base between 22:00-06:00 PHT
 	weekendSurchargeRate = 0.15 // +15 % of base on Sat/Sun
 
-	accidentSurchargeCentavos  int64 = 50_000  // ₱500
-	superHeavyWeightCentavos   int64 = 100_000 // ₱1,000
-	maxSurge                         = 2.5
-	minSurge                         = 1.0
+	accidentSurchargeCentavos int64 = 50_000  // ₱500
+	superHeavyWeightCentavos  int64 = 100_000 // ₱1,000
+	maxSurge                        = 2.5
+	minSurge                        = 1.0
 
-	waitingFreeMinutes  = 30
-	waitingBlockMinutes = 15
+	waitingFreeMinutes        = 30
+	waitingBlockMinutes       = 15
 	waitingFeePerBlock  int64 = 10_000 // ₱100 per 15-min block
 
 	platformFeeCentavos int64 = 5_000 // ₱50 flat booking fee
