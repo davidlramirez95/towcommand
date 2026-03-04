@@ -75,3 +75,10 @@ const (
 	ConditionReportCreated = "ConditionReportCreated"
 	EvidenceValidated      = "EvidenceValidated"
 )
+
+// OTP detail types.
+const (
+	SourceOTP    = "tc.otp"
+	OTPGenerated = "OTPGenerated"
+	OTPVerified  = "OTPVerified"
+)
