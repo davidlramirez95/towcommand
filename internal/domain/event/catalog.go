@@ -60,6 +60,15 @@ const (
 	ProviderOnboarded = "ProviderOnboarded"
 )
 
+// Provider detail types.
+const (
+	SourceProvider      = "tc.provider"
+	ProviderRegistered  = "ProviderRegistered"
+	ProviderOnline      = "ProviderOnline"
+	ProviderOffline     = "ProviderOffline"
+	AvailabilityChanged = "AvailabilityChanged"
+)
+
 // Evidence detail types.
 const (
 	EvidenceUploaded       = "EvidenceUploaded"
