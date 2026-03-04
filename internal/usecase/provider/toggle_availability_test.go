@@ -43,18 +43,18 @@ func TestToggleAvailabilityUseCase_Execute(t *testing.T) {
 	}
 
 	tests := []struct {
-		name       string
-		input      provider.ToggleAvailabilityInput
-		found      *provdomain.Provider
-		findErr    error
-		updateErr  error
-		geoAddErr  error
-		geoRemErr  error
-		pubErr     error
-		wantErr    bool
-		errCode    domainerrors.ErrorCode
-		checkOut   func(t *testing.T, out *provider.ToggleAvailabilityOutput)
-		checkGeo   func(t *testing.T, geo *mockGeoCache)
+		name      string
+		input     provider.ToggleAvailabilityInput
+		found     *provdomain.Provider
+		findErr   error
+		updateErr error
+		geoAddErr error
+		geoRemErr error
+		pubErr    error
+		wantErr   bool
+		errCode   domainerrors.ErrorCode
+		checkOut  func(t *testing.T, out *provider.ToggleAvailabilityOutput)
+		checkGeo  func(t *testing.T, geo *mockGeoCache)
 	}{
 		{
 			name:  "go online successfully",

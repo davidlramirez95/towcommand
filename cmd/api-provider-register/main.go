@@ -38,7 +38,7 @@ func main() {
 
 			input.CognitoSub = handler.ExtractUserID(event)
 
-			result, err := uc.Execute(ctx, input)
+			result, err := uc.Execute(ctx, &input)
 			if err != nil {
 				return handler.ErrorResponse(err), nil
 			}

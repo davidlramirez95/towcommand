@@ -71,7 +71,7 @@ func TestRegisterUseCase_Execute(t *testing.T) {
 			log := slog.Default()
 
 			uc := provider.NewRegisterUseCase(saver, pub, log)
-			result, err := uc.Execute(context.Background(), tt.input)
+			result, err := uc.Execute(context.Background(), &tt.input)
 
 			if tt.wantErr {
 				require.Error(t, err)

@@ -47,7 +47,7 @@ func NewRegisterUseCase(saver port.ProviderSaver, publisher port.EventPublisher,
 }
 
 // Execute registers a new provider with pending verification status and BASIC trust tier.
-func (uc *RegisterUseCase) Execute(ctx context.Context, input RegisterInput) (*RegisterOutput, error) {
+func (uc *RegisterUseCase) Execute(ctx context.Context, input *RegisterInput) (*RegisterOutput, error) {
 	providerID := generateProviderID()
 	now := time.Now().UTC()
 

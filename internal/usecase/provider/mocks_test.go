@@ -70,11 +70,11 @@ func (m *mockProviderAvailabilityUpdater) UpdateAvailability(_ context.Context, 
 // --- GeoCache ---
 
 type mockGeoCache struct {
-	addErr      error
-	findErr     error
-	removeErr   error
-	nearby      []port.ProviderDistance
-	addCalled   bool
+	addErr       error
+	findErr      error
+	removeErr    error
+	nearby       []port.ProviderDistance
+	addCalled    bool
 	removeCalled bool
 }
 

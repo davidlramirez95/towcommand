@@ -11,8 +11,8 @@ import (
 	domainerrors "github.com/davidlramirez95/towcommand/internal/domain/errors"
 	provdomain "github.com/davidlramirez95/towcommand/internal/domain/provider"
 	"github.com/davidlramirez95/towcommand/internal/domain/user"
-	provider "github.com/davidlramirez95/towcommand/internal/usecase/provider"
 	"github.com/davidlramirez95/towcommand/internal/usecase/port"
+	provider "github.com/davidlramirez95/towcommand/internal/usecase/provider"
 )
 
 func TestGetNearbyUseCase_Execute(t *testing.T) {
