@@ -24,7 +24,7 @@ func newGeoTestClient(t *testing.T) (*cache.RedisGeoCache, *miniredis.Miniredis)
 		Host: mr.Host(),
 		Port: mr.Server().Addr().Port,
 	})
-	t.Cleanup(func() { client.Close() })
+	t.Cleanup(func() { _ = client.Close() })
 	return cache.NewRedisGeoCache(client), mr
 }
 
@@ -71,9 +71,9 @@ func TestRedisGeoCache_FindNearbyProviders(t *testing.T) {
 		lng float64
 	}{
 		{"close-provider", 14.6000, 120.9850},    // ~55m away
-		{"medium-provider", 14.6100, 120.9900},    // ~1.2km away
-		{"far-provider", 14.7000, 121.0500},       // ~13km away
-		{"very-far-provider", 15.0000, 121.5000},  // ~70km away
+		{"medium-provider", 14.6100, 120.9900},   // ~1.2km away
+		{"far-provider", 14.7000, 121.0500},      // ~13km away
+		{"very-far-provider", 15.0000, 121.5000}, // ~70km away
 	}
 	for _, p := range providers {
 		require.NoError(t, geo.AddProviderLocation(ctx, p.id, p.lat, p.lng))

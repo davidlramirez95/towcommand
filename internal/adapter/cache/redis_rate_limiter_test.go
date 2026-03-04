@@ -18,7 +18,7 @@ func newRateLimiterTestClient(t *testing.T) (*cache.RedisRateLimiter, *miniredis
 		Host: mr.Host(),
 		Port: mr.Server().Addr().Port,
 	})
-	t.Cleanup(func() { client.Close() })
+	t.Cleanup(func() { _ = client.Close() })
 	return cache.NewRedisRateLimiter(client), mr
 }
 

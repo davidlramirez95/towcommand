@@ -19,7 +19,7 @@ func newSurgeTestClient(t *testing.T) (*cache.RedisSurgeCache, *miniredis.Minire
 		Host: mr.Host(),
 		Port: mr.Server().Addr().Port,
 	})
-	t.Cleanup(func() { client.Close() })
+	t.Cleanup(func() { _ = client.Close() })
 	return cache.NewRedisSurgeCache(client), mr
 }
 

@@ -51,7 +51,7 @@ var _ port.RateLimiter = (*RedisRateLimiter)(nil)
 
 // CheckRateLimit checks whether a request is allowed under the sliding window.
 // Each call with an allowed result records the request in the window.
-func (r *RedisRateLimiter) CheckRateLimit(ctx context.Context, key string, maxRequests int, windowSec int) (bool, int, error) {
+func (r *RedisRateLimiter) CheckRateLimit(ctx context.Context, key string, maxRequests, windowSec int) (allowed bool, remaining int, err error) {
 	redisKey := rateLimitKeyPrefix + key
 	now := time.Now().UnixMicro()
 	windowMicro := int64(windowSec) * 1_000_000
@@ -62,7 +62,7 @@ func (r *RedisRateLimiter) CheckRateLimit(ctx context.Context, key string, maxRe
 		return false, 0, fmt.Errorf("checking rate limit for %s: %w", key, err)
 	}
 
-	allowed := result[0] == 1
-	remaining := int(result[1])
+	allowed = result[0] == 1
+	remaining = int(result[1])
 	return allowed, remaining, nil
 }

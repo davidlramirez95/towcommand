@@ -19,7 +19,7 @@ func newSessionTestClient(t *testing.T) (*cache.RedisSessionCache, *miniredis.Mi
 		Host: mr.Host(),
 		Port: mr.Server().Addr().Port,
 	})
-	t.Cleanup(func() { client.Close() })
+	t.Cleanup(func() { _ = client.Close() })
 	return cache.NewRedisSessionCache(client), mr
 }
 

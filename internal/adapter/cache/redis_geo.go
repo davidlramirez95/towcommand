@@ -34,7 +34,10 @@ func (g *RedisGeoCache) AddProviderLocation(ctx context.Context, providerID stri
 }
 
 // FindNearbyProviders returns providers within radiusKm, sorted by distance ascending.
-func (g *RedisGeoCache) FindNearbyProviders(ctx context.Context, lat, lng float64, radiusKm float64) ([]port.ProviderDistance, error) {
+// NOTE: Uses GeoRadius because miniredis v2.37.0 does not support GEOSEARCH yet.
+// TODO: Migrate to GeoSearchLocation once miniredis adds GEOSEARCH support.
+func (g *RedisGeoCache) FindNearbyProviders(ctx context.Context, lat, lng, radiusKm float64) ([]port.ProviderDistance, error) {
+	//nolint:staticcheck // GeoRadius is deprecated but miniredis lacks GEOSEARCH support.
 	results, err := g.client.GeoRadius(ctx, geoKey, lng, lat, &redis.GeoRadiusQuery{
 		Radius:   radiusKm,
 		Unit:     "km",

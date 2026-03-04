@@ -16,7 +16,7 @@ type ProviderDistance struct {
 // GeoCache manages geospatial indexing of provider locations.
 type GeoCache interface {
 	AddProviderLocation(ctx context.Context, providerID string, lat, lng float64) error
-	FindNearbyProviders(ctx context.Context, lat, lng float64, radiusKm float64) ([]ProviderDistance, error)
+	FindNearbyProviders(ctx context.Context, lat, lng, radiusKm float64) ([]ProviderDistance, error)
 	RemoveProvider(ctx context.Context, providerID string) error
 }
 
@@ -29,14 +29,14 @@ type SessionCache interface {
 
 // OTPCache stores hashed OTP codes with automatic expiration.
 type OTPCache interface {
-	StoreOTP(ctx context.Context, bookingID string, otpType string, hashedOTP string, ttl time.Duration) error
-	GetOTP(ctx context.Context, bookingID string, otpType string) (string, error)
-	DeleteOTP(ctx context.Context, bookingID string, otpType string) error
+	StoreOTP(ctx context.Context, bookingID, otpType, hashedOTP string, ttl time.Duration) error
+	GetOTP(ctx context.Context, bookingID, otpType string) (string, error)
+	DeleteOTP(ctx context.Context, bookingID, otpType string) error
 }
 
 // RateLimiter performs sliding-window rate-limit checks.
 type RateLimiter interface {
-	CheckRateLimit(ctx context.Context, key string, maxRequests int, windowSec int) (allowed bool, remaining int, err error)
+	CheckRateLimit(ctx context.Context, key string, maxRequests, windowSec int) (allowed bool, remaining int, err error)
 }
 
 // SurgeCache tracks area demand counters for surge pricing.

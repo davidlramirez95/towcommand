@@ -19,7 +19,7 @@ func newOTPTestClient(t *testing.T) (*cache.RedisOTPCache, *miniredis.Miniredis)
 		Host: mr.Host(),
 		Port: mr.Server().Addr().Port,
 	})
-	t.Cleanup(func() { client.Close() })
+	t.Cleanup(func() { _ = client.Close() })
 	return cache.NewRedisOTPCache(client), mr
 }
 

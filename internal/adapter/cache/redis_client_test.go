@@ -41,7 +41,7 @@ func TestNewRedisClient(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			client := cache.NewRedisClient(tt.opts)
-			defer client.Close()
+			defer func() { _ = client.Close() }()
 			assert.NotNil(t, client)
 		})
 	}
@@ -76,7 +76,7 @@ func TestHealthCheck(t *testing.T) {
 				Host: mr.Host(),
 				Port: mr.Server().Addr().Port,
 			})
-			defer client.Close()
+			defer func() { _ = client.Close() }()
 
 			tt.setup()
 
