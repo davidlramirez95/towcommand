@@ -10,7 +10,10 @@ import (
 	"github.com/davidlramirez95/towcommand/internal/usecase/port"
 )
 
-const wsConnectionKeyPrefix = "ws:connection:"
+const (
+	wsConnectionKeyPrefix = "ws:connection:"
+	wsReverseKeyPrefix    = "ws:reverse:"
+)
 
 // RedisSessionCache implements port.SessionCache using Redis string keys with TTL.
 type RedisSessionCache struct {
@@ -47,5 +50,30 @@ func (s *RedisSessionCache) GetConnection(ctx context.Context, userID string) (s
 // RemoveConnection deletes the connection mapping for a user.
 func (s *RedisSessionCache) RemoveConnection(ctx context.Context, userID string) error {
 	key := wsConnectionKeyPrefix + userID
+	return s.client.Del(ctx, key).Err()
+}
+
+// MapReverseConnection stores a reverse mapping from connectionID to userID with the given TTL.
+func (s *RedisSessionCache) MapReverseConnection(ctx context.Context, connectionID, userID string, ttl time.Duration) error {
+	key := wsReverseKeyPrefix + connectionID
+	return s.client.Set(ctx, key, userID, ttl).Err()
+}
+
+// GetUserByConnection returns the user ID for a connection, or empty string if not found.
+func (s *RedisSessionCache) GetUserByConnection(ctx context.Context, connectionID string) (string, error) {
+	key := wsReverseKeyPrefix + connectionID
+	val, err := s.client.Get(ctx, key).Result()
+	if err == redis.Nil {
+		return "", nil
+	}
+	if err != nil {
+		return "", fmt.Errorf("getting user for connection %s: %w", connectionID, err)
+	}
+	return val, nil
+}
+
+// RemoveReverseConnection deletes the reverse connection mapping.
+func (s *RedisSessionCache) RemoveReverseConnection(ctx context.Context, connectionID string) error {
+	key := wsReverseKeyPrefix + connectionID
 	return s.client.Del(ctx, key).Err()
 }

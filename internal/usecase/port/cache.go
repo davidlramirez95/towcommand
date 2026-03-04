@@ -21,10 +21,15 @@ type GeoCache interface {
 }
 
 // SessionCache manages WebSocket connection mappings.
+// It supports both forward (userID -> connectionID) and reverse
+// (connectionID -> userID) lookups to enable clean disconnect handling.
 type SessionCache interface {
 	MapConnection(ctx context.Context, userID, connectionID string, ttl time.Duration) error
 	GetConnection(ctx context.Context, userID string) (string, error)
 	RemoveConnection(ctx context.Context, userID string) error
+	MapReverseConnection(ctx context.Context, connectionID, userID string, ttl time.Duration) error
+	GetUserByConnection(ctx context.Context, connectionID string) (string, error)
+	RemoveReverseConnection(ctx context.Context, connectionID string) error
 }
 
 // OTPCache stores hashed OTP codes with automatic expiration.
