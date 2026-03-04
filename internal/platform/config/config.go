@@ -33,6 +33,7 @@ type Config struct {
 	APIGatewayManagementEndpoint string
 	RedisHost                    string
 	RedisPort                    int
+	RedisPassword                string
 	LogLevel                     string
 }
 
@@ -72,9 +73,10 @@ func Load() *Config {
 		APIGatewayManagementEndpoint: os.Getenv("APIGATEWAY_MANAGEMENT_ENDPOINT"),
 
 		// Optional with defaults
-		RedisHost: getEnv("REDIS_HOST", "localhost"),
-		RedisPort: getEnvInt("REDIS_PORT", 6379),
-		LogLevel:  strings.ToUpper(getEnv("LOG_LEVEL", "INFO")),
+		RedisHost:     getEnv("REDIS_HOST", "localhost"),
+		RedisPort:     getEnvInt("REDIS_PORT", 6379),
+		RedisPassword: os.Getenv("REDIS_PASSWORD"),
+		LogLevel:      strings.ToUpper(getEnv("LOG_LEVEL", "INFO")),
 	}
 	return cfg
 }
