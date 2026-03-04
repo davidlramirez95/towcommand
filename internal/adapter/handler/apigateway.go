@@ -73,6 +73,25 @@ func ExtractUserID(event *events.APIGatewayProxyRequest) string {
 	return sub
 }
 
+// ExtractUserType extracts the user type from the API Gateway authorizer.
+// It checks the top-level authorizer context first (custom authorizer),
+// then falls back to the Cognito claims custom:userType field.
+func ExtractUserType(event *events.APIGatewayProxyRequest) string {
+	if ut, ok := event.RequestContext.Authorizer["userType"].(string); ok {
+		return ut
+	}
+	claims, ok := event.RequestContext.Authorizer["claims"]
+	if !ok {
+		return ""
+	}
+	claimsMap, ok := claims.(map[string]interface{})
+	if !ok {
+		return ""
+	}
+	ut, _ := claimsMap["custom:userType"].(string)
+	return ut
+}
+
 // SuccessResponse builds an API Gateway response with the given status code
 // and JSON-marshalled body. CORS headers are applied automatically.
 func SuccessResponse(statusCode int, body any) events.APIGatewayProxyResponse {
