@@ -80,6 +80,26 @@ func WithRecover(next APIGatewayHandler) APIGatewayHandler {
 	}
 }
 
+// RequireRole returns middleware that checks the user's role from Cognito JWT claims.
+// It allows the request if the user's type matches any of the allowed roles.
+// Returns 403 Forbidden if the role is not in the allowed list.
+func RequireRole(allowedRoles ...string) func(APIGatewayHandler) APIGatewayHandler {
+	return func(next APIGatewayHandler) APIGatewayHandler {
+		return func(ctx context.Context, event *events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+			userType := ExtractUserType(event)
+			if userType == "" {
+				return ErrorResponse(domainerrors.NewForbiddenError("missing user type")), nil
+			}
+			for _, role := range allowedRoles {
+				if userType == role {
+					return next(ctx, event)
+				}
+			}
+			return ErrorResponse(domainerrors.NewForbiddenError("insufficient permissions")), nil
+		}
+	}
+}
+
 // generateCorrelationID produces a random hex string for use as a correlation ID.
 func generateCorrelationID() string {
 	b := make([]byte, 16)
