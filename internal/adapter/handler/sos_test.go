@@ -47,10 +47,10 @@ func (m *mockSOSFinder) FindByID(ctx context.Context, alertID string) (*safety.S
 }
 
 type mockSOSResolver struct {
-	ResolveFunc func(ctx context.Context, alertID string, resolvedBy string, resolvedAt time.Time) error
+	ResolveFunc func(ctx context.Context, alertID, resolvedBy string, resolvedAt time.Time) error
 }
 
-func (m *mockSOSResolver) Resolve(ctx context.Context, alertID string, resolvedBy string, resolvedAt time.Time) error {
+func (m *mockSOSResolver) Resolve(ctx context.Context, alertID, resolvedBy string, resolvedAt time.Time) error {
 	if m.ResolveFunc != nil {
 		return m.ResolveFunc(ctx, alertID, resolvedBy, resolvedAt)
 	}
