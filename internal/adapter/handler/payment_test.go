@@ -18,8 +18,8 @@ import (
 	"github.com/davidlramirez95/towcommand/internal/domain/payment"
 	"github.com/davidlramirez95/towcommand/internal/domain/provider"
 	"github.com/davidlramirez95/towcommand/internal/domain/user"
-	"github.com/davidlramirez95/towcommand/internal/usecase/port"
 	paymentuc "github.com/davidlramirez95/towcommand/internal/usecase/payment"
+	"github.com/davidlramirez95/towcommand/internal/usecase/port"
 )
 
 // ---------------------------------------------------------------------------
