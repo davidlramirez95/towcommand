@@ -73,10 +73,10 @@ func (uc *InitiatePaymentUseCase) Execute(ctx context.Context, input *InitiatePa
 	if err != nil {
 		return nil, fmt.Errorf("listing payments for booking %s: %w", input.BookingID, err)
 	}
-	for _, ep := range existing {
-		if ep.Status == payment.PaymentStatusCaptured || ep.Status == payment.PaymentStatusPending {
+	for i := range existing {
+		if existing[i].Status == payment.PaymentStatusCaptured || existing[i].Status == payment.PaymentStatusPending {
 			return nil, domainerrors.NewConflictError(
-				fmt.Sprintf("booking %s already has a %s payment", input.BookingID, ep.Status),
+				fmt.Sprintf("booking %s already has a %s payment", input.BookingID, existing[i].Status),
 			)
 		}
 	}
