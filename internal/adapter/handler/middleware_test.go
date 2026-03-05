@@ -212,3 +212,126 @@ func TestMiddlewareComposition_PanicRecovery(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
 }
+
+// ---------------------------------------------------------------------------
+// RequireRole
+// ---------------------------------------------------------------------------
+
+func TestRequireRole_AllowedRole(t *testing.T) {
+	called := false
+	base := handler.APIGatewayHandler(func(_ context.Context, _ *events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+		called = true
+		return events.APIGatewayProxyResponse{StatusCode: http.StatusOK}, nil
+	})
+
+	wrapped := handler.RequireRole("admin", "ops_agent")(base)
+	event := &events.APIGatewayProxyRequest{
+		RequestContext: events.APIGatewayProxyRequestContext{
+			Authorizer: map[string]interface{}{
+				"claims": map[string]interface{}{
+					"sub":             "user-123",
+					"custom:userType": "admin",
+				},
+			},
+		},
+	}
+
+	resp, err := wrapped(context.Background(), event)
+	require.NoError(t, err)
+	assert.True(t, called)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+}
+
+func TestRequireRole_DeniedRole(t *testing.T) {
+	called := false
+	base := handler.APIGatewayHandler(func(_ context.Context, _ *events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+		called = true
+		return events.APIGatewayProxyResponse{StatusCode: http.StatusOK}, nil
+	})
+
+	wrapped := handler.RequireRole("admin", "ops_agent")(base)
+	event := &events.APIGatewayProxyRequest{
+		RequestContext: events.APIGatewayProxyRequestContext{
+			Authorizer: map[string]interface{}{
+				"claims": map[string]interface{}{
+					"sub":             "user-456",
+					"custom:userType": "customer",
+				},
+			},
+		},
+	}
+
+	resp, err := wrapped(context.Background(), event)
+	require.NoError(t, err)
+	assert.False(t, called)
+	assert.Equal(t, http.StatusForbidden, resp.StatusCode)
+
+	var body struct {
+		Error struct {
+			Code    string `json:"code"`
+			Message string `json:"message"`
+		} `json:"error"`
+	}
+	require.NoError(t, json.Unmarshal([]byte(resp.Body), &body))
+	assert.Equal(t, "FORBIDDEN", body.Error.Code)
+	assert.Equal(t, "insufficient permissions", body.Error.Message)
+}
+
+func TestRequireRole_MissingUserType(t *testing.T) {
+	called := false
+	base := handler.APIGatewayHandler(func(_ context.Context, _ *events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+		called = true
+		return events.APIGatewayProxyResponse{StatusCode: http.StatusOK}, nil
+	})
+
+	wrapped := handler.RequireRole("admin", "ops_agent")(base)
+	event := &events.APIGatewayProxyRequest{
+		RequestContext: events.APIGatewayProxyRequestContext{
+			Authorizer: map[string]interface{}{
+				"claims": map[string]interface{}{
+					"sub": "user-789",
+				},
+			},
+		},
+	}
+
+	resp, err := wrapped(context.Background(), event)
+	require.NoError(t, err)
+	assert.False(t, called)
+	assert.Equal(t, http.StatusForbidden, resp.StatusCode)
+
+	var body struct {
+		Error struct {
+			Code    string `json:"code"`
+			Message string `json:"message"`
+		} `json:"error"`
+	}
+	require.NoError(t, json.Unmarshal([]byte(resp.Body), &body))
+	assert.Equal(t, "FORBIDDEN", body.Error.Code)
+	assert.Equal(t, "missing user type", body.Error.Message)
+}
+
+func TestRequireRole_MultipleAllowedRoles(t *testing.T) {
+	called := false
+	base := handler.APIGatewayHandler(func(_ context.Context, _ *events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+		called = true
+		return events.APIGatewayProxyResponse{StatusCode: http.StatusOK}, nil
+	})
+
+	wrapped := handler.RequireRole("admin", "ops_agent")(base)
+	event := &events.APIGatewayProxyRequest{
+		RequestContext: events.APIGatewayProxyRequestContext{
+			Authorizer: map[string]interface{}{
+				"claims": map[string]interface{}{
+					"sub":             "user-ops",
+					"custom:userType": "ops_agent",
+				},
+			},
+		},
+	}
+
+	resp, err := wrapped(context.Background(), event)
+	require.NoError(t, err)
+	assert.True(t, called)
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+}
