@@ -22,14 +22,14 @@ type SubmitRatingInput struct {
 // SubmitRatingUseCase orchestrates rating submission, provider average recalculation,
 // and event publishing.
 type SubmitRatingUseCase struct {
-	ratings         RatingSaver
-	ratingsFinder   RatingByBookingFinder
-	ratingsLister   RatingByProviderLister
-	bookings        BookingFinder
-	providers       ProviderFinder
-	providerSaver   ProviderSaver
-	events          EventPublisher
-	now             func() time.Time
+	ratings       RatingSaver
+	ratingsFinder RatingByBookingFinder
+	ratingsLister RatingByProviderLister
+	bookings      BookingFinder
+	providers     ProviderFinder
+	providerSaver ProviderSaver
+	events        EventPublisher
+	now           func() time.Time
 }
 
 // NewSubmitRatingUseCase constructs a SubmitRatingUseCase with its dependencies.
