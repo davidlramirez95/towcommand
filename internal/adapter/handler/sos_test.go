@@ -505,8 +505,8 @@ func TestAdminActiveSOSHandler(t *testing.T) {
 			},
 		},
 		{
-			name: "unauthorized - no user ID",
-			event: &events.APIGatewayProxyRequest{},
+			name:        "unauthorized - no user ID",
+			event:       &events.APIGatewayProxyRequest{},
 			wantStatus:  http.StatusUnauthorized,
 			wantErrCode: "UNAUTHORIZED",
 		},
