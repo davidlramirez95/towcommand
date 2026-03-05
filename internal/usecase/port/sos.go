@@ -19,7 +19,7 @@ type SOSFinder interface {
 
 // SOSResolver marks an SOS alert as resolved.
 type SOSResolver interface {
-	Resolve(ctx context.Context, alertID string, resolvedBy string, resolvedAt time.Time) error
+	Resolve(ctx context.Context, alertID, resolvedBy string, resolvedAt time.Time) error
 }
 
 // SOSActiveLister queries for active (unresolved) SOS alerts.

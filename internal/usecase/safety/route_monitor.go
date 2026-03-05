@@ -17,7 +17,7 @@ type RoutePoint struct {
 // The corridor is defined by the line segment from pickup to dropoff. The
 // function computes the shortest distance from the current point to this
 // segment and returns true if that distance exceeds the threshold.
-func CheckRouteDeviation(current RoutePoint, pickup, dropoff RoutePoint, thresholdKm float64) bool {
+func CheckRouteDeviation(current, pickup, dropoff RoutePoint, thresholdKm float64) bool {
 	dist := pointToSegmentDistanceKm(current, pickup, dropoff)
 	return dist > thresholdKm
 }

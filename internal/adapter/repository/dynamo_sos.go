@@ -67,7 +67,7 @@ func (r *DynamoSOSRepository) FindByID(ctx context.Context, alertID string) (*sa
 }
 
 // Resolve marks an SOS alert as resolved by updating its status fields and GSI2 key.
-func (r *DynamoSOSRepository) Resolve(ctx context.Context, alertID string, resolvedBy string, resolvedAt time.Time) error {
+func (r *DynamoSOSRepository) Resolve(ctx context.Context, alertID, resolvedBy string, resolvedAt time.Time) error {
 	return r.updateItem(ctx, prefixSOS+alertID, skMetadata, map[string]any{
 		"resolved":   true,
 		"resolvedAt": resolvedAt,
