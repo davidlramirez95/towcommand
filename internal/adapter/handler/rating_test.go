@@ -102,40 +102,6 @@ func (m *mockEventPublisher) Publish(ctx context.Context, source, detailType str
 }
 
 // ---------------------------------------------------------------------------
-// Helper: build API Gateway event with Cognito auth
-// ---------------------------------------------------------------------------
-
-func apiEventWithAuth(userID string) *events.APIGatewayProxyRequest {
-	return &events.APIGatewayProxyRequest{
-		RequestContext: events.APIGatewayProxyRequestContext{
-			Authorizer: map[string]interface{}{
-				"claims": map[string]interface{}{
-					"sub": userID,
-				},
-			},
-		},
-	}
-}
-
-// ---------------------------------------------------------------------------
-// Helper: parse error response body
-// ---------------------------------------------------------------------------
-
-type errorBody struct {
-	Error struct {
-		Code    string `json:"code"`
-		Message string `json:"message"`
-	} `json:"error"`
-}
-
-func parseErrorBody(t *testing.T, body string) errorBody {
-	t.Helper()
-	var eb errorBody
-	require.NoError(t, json.Unmarshal([]byte(body), &eb))
-	return eb
-}
-
-// ---------------------------------------------------------------------------
 // SubmitRatingHandler tests
 // ---------------------------------------------------------------------------
 
