@@ -76,6 +76,12 @@ const (
 	EvidenceValidated      = "EvidenceValidated"
 )
 
+// Rating detail types.
+const (
+	SourceRating    = "tc.rating"
+	RatingSubmitted = "RatingSubmitted"
+)
+
 // OTP detail types.
 const (
 	SourceOTP    = "tc.otp"
