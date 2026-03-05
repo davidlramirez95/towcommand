@@ -78,8 +78,8 @@ func TestSOSRepository_Save(t *testing.T) {
 		{
 			name: "saves resolved alert with correct GSI2PK",
 			alert: &safety.SOSAlert{
-				AlertID:  "SOS-2026-def456",
-				Resolved: true,
+				AlertID:   "SOS-2026-def456",
+				Resolved:  true,
 				Timestamp: time.Date(2026, 3, 5, 12, 0, 0, 0, time.UTC),
 			},
 			checkItem: func(t *testing.T, input *dynamodb.PutItemInput) {
