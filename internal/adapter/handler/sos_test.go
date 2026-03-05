@@ -102,26 +102,6 @@ func (m *mockSafetyEventPublisher) Publish(ctx context.Context, source, detailTy
 }
 
 // ---------------------------------------------------------------------------
-// Helper: build API Gateway event with Cognito auth and user type
-// ---------------------------------------------------------------------------
-
-func apiEventWithAuthAndRole(userID, userType string) *events.APIGatewayProxyRequest {
-	claims := map[string]interface{}{
-		"sub": userID,
-	}
-	if userType != "" {
-		claims["custom:userType"] = userType
-	}
-	return &events.APIGatewayProxyRequest{
-		RequestContext: events.APIGatewayProxyRequestContext{
-			Authorizer: map[string]interface{}{
-				"claims": claims,
-			},
-		},
-	}
-}
-
-// ---------------------------------------------------------------------------
 // TriggerSOSHandler tests
 // ---------------------------------------------------------------------------
 
