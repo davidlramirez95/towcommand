@@ -101,7 +101,7 @@ describe('typography', () => {
 describe('spacing', () => {
   it('spacing scale has no undefined gaps (spacing[n] used as array index in every screen)', () => {
     // Components use spacing[0] through spacing[10], some use spacing[12] and spacing[16]
-    const requiredIndices = [0, 1, 2, 3, 4, 5, 6, 8, 10];
+    const requiredIndices = [0, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16];
     for (const idx of requiredIndices) {
       expect(spacing[idx]).toBeDefined();
       expect(typeof spacing[idx]).toBe('number');

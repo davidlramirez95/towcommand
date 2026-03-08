@@ -17,7 +17,7 @@ describe('notifications store', () => {
     id,
     title: `Notification ${id}`,
     body: `Body for ${id}`,
-    receivedAt: new Date().toISOString(),
+    receivedAt: Date.now(),
     read: false,
   });
 

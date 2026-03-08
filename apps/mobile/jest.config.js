@@ -1,7 +1,7 @@
 /** @type {import('jest').Config} */
 module.exports = {
   preset: 'jest-expo',
-  setupFiles: ['./jest.setup.js'],
+  setupFilesAfterEnv: ['./jest.setup.js'],
   // In a pnpm monorepo, dependencies are hoisted to root node_modules/.pnpm/
   // We need to transform React Native and Expo packages regardless of their location
   transformIgnorePatterns: [

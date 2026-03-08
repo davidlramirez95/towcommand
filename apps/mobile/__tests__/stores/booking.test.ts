@@ -15,7 +15,7 @@ beforeEach(() => {
 
 describe('booking store', () => {
   const mockBooking = {
-    id: 'BK-001',
+    bookingId: 'BK-001',
     status: 'MATCHED' as const,
     providerName: 'Juan Driver',
     providerPhone: '+639171111111',
@@ -33,7 +33,7 @@ describe('booking store', () => {
     useBookingStore.getState().setActiveBooking(mockBooking);
     const booking = useBookingStore.getState().activeBooking;
 
-    expect(booking?.id).toBe('BK-001');
+    expect(booking?.bookingId).toBe('BK-001');
     expect(booking?.status).toBe('MATCHED');
     expect(booking?.providerName).toBe('Juan Driver');
   });
@@ -46,7 +46,6 @@ describe('booking store', () => {
   });
 
   it('updateStatus with no active booking is a no-op (prevents null crash)', () => {
-    // No booking set — updateStatus should not throw
     expect(() => {
       useBookingStore.getState().updateStatus('EN_ROUTE');
     }).not.toThrow();
@@ -66,6 +65,7 @@ describe('booking store', () => {
     expect(() => {
       useBookingStore.getState().updateProviderLocation(14.6, 120.98);
     }).not.toThrow();
+    expect(useBookingStore.getState().activeBooking).toBeNull();
   });
 
   it('updateETA stores ETA value (WS eta_update event)', () => {
@@ -79,6 +79,7 @@ describe('booking store', () => {
     expect(() => {
       useBookingStore.getState().updateETA(5);
     }).not.toThrow();
+    expect(useBookingStore.getState().activeBooking).toBeNull();
   });
 
   it('reset() clears ALL booking fields — prevents stale provider data on next booking', () => {
@@ -99,13 +100,11 @@ describe('booking store', () => {
   it('multiple rapid location updates dont lose data (WS flood scenario)', () => {
     useBookingStore.getState().setActiveBooking(mockBooking);
 
-    // Simulate 5 rapid GPS updates
     for (let i = 0; i < 5; i++) {
       useBookingStore.getState().updateProviderLocation(14.5 + i * 0.001, 120.9 + i * 0.001);
     }
 
     const booking = useBookingStore.getState().activeBooking;
-    // Last update wins
     expect(booking?.providerLat).toBeCloseTo(14.504, 3);
     expect(booking?.providerLng).toBeCloseTo(120.904, 3);
   });
@@ -115,7 +114,6 @@ describe('booking store', () => {
     useBookingStore.getState().updateProviderLocation(14.6, 120.98);
     useBookingStore.getState().updateETA(7);
 
-    // Status update should NOT wipe location/ETA
     useBookingStore.getState().updateStatus('ARRIVED');
 
     const booking = useBookingStore.getState().activeBooking;

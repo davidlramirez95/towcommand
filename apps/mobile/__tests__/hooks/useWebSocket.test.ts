@@ -20,15 +20,16 @@ describe('useWebSocket - message routing contracts', () => {
   beforeEach(() => {
     useBookingStore.getState().reset();
     useBookingStore.getState().setActiveBooking({
-      id: 'BK-001',
+      bookingId: 'BK-001',
       status: 'EN_ROUTE',
       providerName: 'Juan',
       providerPhone: '+639170000000',
+      pickupLat: 14.5995,
+      pickupLng: 120.9842,
     });
   });
 
   it('location_update message updates provider coordinates in booking store', () => {
-    // Simulates what useWebSocket.onMessage does for location_update
     const data = { lat: 14.6001, lng: 120.9851 };
     useBookingStore.getState().updateProviderLocation(data.lat, data.lng);
 
@@ -38,7 +39,6 @@ describe('useWebSocket - message routing contracts', () => {
   });
 
   it('booking_status message updates status in booking store', () => {
-    // Simulates what useWebSocket.onMessage does for booking_status
     const data = { status: 'ARRIVED' };
     useBookingStore.getState().updateStatus(data.status);
 
@@ -46,7 +46,6 @@ describe('useWebSocket - message routing contracts', () => {
   });
 
   it('eta_update message updates ETA in booking store', () => {
-    // Simulates what useWebSocket.onMessage does for eta_update
     const data = { eta: 3 };
     useBookingStore.getState().updateETA(data.eta);
 
@@ -54,7 +53,6 @@ describe('useWebSocket - message routing contracts', () => {
   });
 
   it('unknown message type is a silent no-op (forward compatibility)', () => {
-    // If backend adds new event types, the hook shouldn't crash
     const beforeState = useBookingStore.getState().activeBooking;
 
     // Simulate receiving an unknown message type — no store action
@@ -64,19 +62,22 @@ describe('useWebSocket - message routing contracts', () => {
     expect(afterState).toEqual(beforeState);
   });
 
-  it('message with null lat/lng does not corrupt store', () => {
-    // Edge case: WS sends location_update with null coordinates
-    // The store should handle this gracefully
-    useBookingStore.getState().updateProviderLocation(0, 0);
+  it('null lat/lng preserves existing coordinates (guard against corrupt data)', () => {
+    // Seed a known location first
+    useBookingStore.getState().updateProviderLocation(14.6, 120.98);
+
+    // Simulate what the hook guard should do: only update with valid numbers
+    const data = { lat: null, lng: null };
+    if (typeof data.lat === 'number' && typeof data.lng === 'number') {
+      useBookingStore.getState().updateProviderLocation(data.lat, data.lng);
+    }
 
     const booking = useBookingStore.getState().activeBooking;
-    // 0,0 is "null island" but technically valid coordinates
-    expect(booking?.providerLat).toBe(0);
-    expect(booking?.providerLng).toBe(0);
+    expect(booking?.providerLat).toBe(14.6);
+    expect(booking?.providerLng).toBe(120.98);
   });
 
   it('rapid status transitions preserve data integrity', () => {
-    // Simulates rapid WS events during booking lifecycle
     useBookingStore.getState().updateProviderLocation(14.6, 120.98);
     useBookingStore.getState().updateETA(10);
     useBookingStore.getState().updateStatus('ARRIVED');

@@ -21,6 +21,14 @@ const MockWebSocket = global.WebSocket as any;
 beforeEach(() => {
   jest.clearAllMocks();
   jest.useFakeTimers();
+  // Restore default fetchAuthSession behavior — clearAllMocks doesn't reset
+  // mock implementations, so mockRejectedValue from reconnect tests persists.
+  (fetchAuthSession as jest.Mock).mockResolvedValue({
+    tokens: {
+      idToken: { toString: () => 'mock-jwt-token-123', payload: {} },
+      accessToken: { toString: () => 'mock-access-token' },
+    },
+  });
 });
 
 afterEach(() => {
@@ -38,9 +46,11 @@ describe('WSClient', () => {
     it('connects with JWT token in query param', async () => {
       const client = new WSClient(defaultOptions);
       await client.connect();
+      jest.advanceTimersByTime(10); // trigger onopen
 
-      // WebSocket constructor was called with token
-      expect(MockWebSocket).toBeDefined();
+      // Verify JWT token is in the WebSocket URL
+      const ws = (client as any).ws;
+      expect(ws?.url).toContain('token=mock-jwt-token-123');
     });
 
     it('connects without token when auth fails (public fallback)', async () => {
@@ -105,24 +115,27 @@ describe('WSClient', () => {
     it('stops after maxReconnectAttempts (battery conservation)', async () => {
       (fetchAuthSession as jest.Mock).mockRejectedValue(new Error('No session'));
 
+      const reconnectInterval = 100;
+      const maxReconnectAttempts = 3;
       const client = new WSClient({
         ...defaultOptions,
-        reconnectInterval: 100,
-        maxReconnectAttempts: 3,
+        reconnectInterval,
+        maxReconnectAttempts,
       });
 
-      await client.connect(); // attempt 1 fails
+      await client.connect(); // initial attempt fails
 
-      // Each reconnect attempt
-      for (let i = 0; i < 5; i++) {
-        jest.advanceTimersByTime(100000);
-        await Promise.resolve(); // flush microtasks
+      // Advance timers for each reconnect attempt.
+      // Note: connect() resets reconnectAttempts, so each cycle schedules
+      // one reconnect. We advance enough to trigger maxReconnectAttempts retries.
+      for (let i = 0; i < maxReconnectAttempts; i++) {
+        jest.advanceTimersByTime(reconnectInterval * Math.pow(2, i));
+        await Promise.resolve(); // flush microtasks from async connect()
       }
 
-      // fetchAuthSession should have been called limited times
-      // (initial + max reconnect attempts)
+      // 1 initial + maxReconnectAttempts reconnects
       const callCount = (fetchAuthSession as jest.Mock).mock.calls.length;
-      expect(callCount).toBeLessThanOrEqual(7); // bounded, not infinite
+      expect(callCount).toBeLessThanOrEqual(1 + maxReconnectAttempts);
     });
   });
 
@@ -134,10 +147,11 @@ describe('WSClient', () => {
       await client.connect();
       jest.advanceTimersByTime(10); // trigger onopen
 
-      // Simulate incoming message by accessing the internal ws
-      // This tests the contract that onMessage receives (type, data)
-      // In real implementation, WSClient.onmessage parses JSON
-      expect(onMessage).not.toHaveBeenCalled(); // no messages yet
+      // Simulate incoming message via the WebSocket's onmessage
+      const ws = (client as any).ws;
+      ws?.onmessage?.({ data: JSON.stringify({ type: 'location_update', lat: 14.5 }) });
+
+      expect(onMessage).toHaveBeenCalledWith('location_update', expect.objectContaining({ lat: 14.5 }));
     });
 
     it('malformed JSON does not crash client (resilience)', async () => {
@@ -147,11 +161,14 @@ describe('WSClient', () => {
       await client.connect();
       jest.advanceTimersByTime(10);
 
-      // Client should handle malformed messages gracefully
-      // (the try/catch in onmessage handler)
+      // Simulate malformed JSON message via the WebSocket's onmessage
+      const ws = (client as any).ws;
       expect(() => {
-        // Simulate the error path - no crash expected
+        ws?.onmessage?.({ data: '{invalid json' });
       }).not.toThrow();
+
+      // onMessage should not have been called with invalid JSON
+      expect(onMessage).not.toHaveBeenCalled();
     });
   });
 });

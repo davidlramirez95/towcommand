@@ -121,21 +121,11 @@ describe('api client', () => {
           }),
       });
 
-      await expect(api.get('/bookings/999')).rejects.toThrow(APIError);
-
-      try {
-        await api.get('/bookings/999');
-      } catch (e) {
-        // Second call for detailed assertions
-        mockFetch.mockResolvedValueOnce({
-          ok: false,
-          status: 404,
-          json: () =>
-            Promise.resolve({
-              error: { code: 'NOT_FOUND', message: 'Booking not found' },
-            }),
-        });
-      }
+      const error = await api.get('/bookings/999').catch((e: unknown) => e as APIError);
+      expect(error).toBeInstanceOf(APIError);
+      expect((error as APIError).statusCode).toBe(404);
+      expect((error as APIError).code).toBe('NOT_FOUND');
+      expect((error as APIError).message).toBe('Booking not found');
     });
 
     it('handles non-JSON error body (502 nginx HTML page)', async () => {

@@ -78,10 +78,10 @@ describe('LoginScreen', () => {
     expect(getByText(/Sign Up/)).toBeTruthy();
   });
 
-  it('email input accepts text', () => {
-    const { getByLabelText } = render(<LoginScreen />);
+  it('email input accepts text and updates value', () => {
+    const { getByLabelText, getByDisplayValue } = render(<LoginScreen />);
     const input = getByLabelText('Email');
     fireEvent.changeText(input, 'juan@test.ph');
-    // No crash — input is controlled
+    expect(getByDisplayValue('juan@test.ph')).toBeTruthy();
   });
 });

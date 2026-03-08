@@ -21,15 +21,14 @@ describe('mmkvStorage (Zustand adapter)', () => {
 
   it('getItem returns null for missing keys (Zustand expects null, not undefined)', () => {
     const result = mmkvStorage.getItem('nonexistent-key');
-    // Zustand persist checks `result !== null` — undefined would pass incorrectly
-    expect(result === null || result === undefined).toBe(true);
+    expect(result).toBeNull();
   });
 
   it('removeItem deletes the key', () => {
     mmkvStorage.setItem('to-delete', 'value');
     mmkvStorage.removeItem('to-delete');
     const result = mmkvStorage.getItem('to-delete');
-    expect(result === null || result === undefined).toBe(true);
+    expect(result).toBeNull();
   });
 });
 
@@ -65,7 +64,6 @@ describe('secureStore (token storage)', () => {
     // 2nd order: getTokens does JSON.parse without try/catch.
     // If SecureStore returns corrupt data (e.g., partial write during crash),
     // this will throw SyntaxError. Callers (useAuth) must wrap in try/catch.
-    // This test documents the behavior so callers know to handle it.
     (SecureStore.getItemAsync as jest.Mock).mockResolvedValueOnce('{invalid json');
     await expect(getTokens()).rejects.toThrow(SyntaxError);
   });

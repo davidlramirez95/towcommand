@@ -1,7 +1,15 @@
 // Mock for aws-amplify/auth (used by useAuth hook and API client)
 const mockSession = {
   tokens: {
-    idToken: { toString: () => 'mock-jwt-token-123' },
+    idToken: {
+      toString: () => 'mock-jwt-token-123',
+      payload: {
+        email: 'test@example.com',
+        phone_number: '+639171234567',
+        name: 'Juan Cruz',
+        'custom:user_type': 'customer',
+      },
+    },
     accessToken: { toString: () => 'mock-access-token' },
   },
   credentials: {},

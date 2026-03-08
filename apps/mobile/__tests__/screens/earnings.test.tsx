@@ -41,22 +41,23 @@ describe('EarningsScreen', () => {
     expect(getByText('All Time')).toBeTruthy();
   });
 
-  it('shows PHP currency format for all periods', () => {
+  it('shows both net and gross PHP amounts per period (8 total)', () => {
     const { getAllByText } = render(<EarningsScreen />);
-    // All period cards should show PHP amounts
+    // Each period card renders net (large) + gross (Gross: PHP X.XX)
+    // = 2 PHP amounts per card × 4 cards = 8 PHP occurrences
     const phpElements = getAllByText(/PHP/);
-    expect(phpElements.length).toBeGreaterThanOrEqual(4);
+    expect(phpElements.length).toBe(8);
   });
 
   it('shows job count for each period', () => {
     const { getAllByText } = render(<EarningsScreen />);
     const jobElements = getAllByText(/jobs/);
-    expect(jobElements.length).toBe(4); // one per period
+    expect(jobElements.length).toBe(4);
   });
 
-  it('displays both gross and net amounts (commission transparency)', () => {
+  it('displays Gross label for each period (commission transparency)', () => {
     const { getAllByText } = render(<EarningsScreen />);
     const grossElements = getAllByText(/Gross/);
-    expect(grossElements.length).toBe(4); // one per period card
+    expect(grossElements.length).toBe(4);
   });
 });

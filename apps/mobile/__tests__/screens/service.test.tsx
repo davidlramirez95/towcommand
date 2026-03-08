@@ -10,20 +10,24 @@
  *   selecting wrong service).
  */
 import React from 'react';
-import { render } from '@testing-library/react-native';
-
-jest.mock('expo-router', () => ({
-  router: { push: jest.fn(), replace: jest.fn(), back: jest.fn() },
-  useRouter: () => ({ push: jest.fn(), replace: jest.fn(), back: jest.fn() }),
-}));
+import { render, fireEvent } from '@testing-library/react-native';
 
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: ({ children }: { children: React.ReactNode }) => children,
 }));
 
+// Use global expo-router mock from __mocks__/expo-router.js
+// Per-test jest.mock('expo-router', factory) doesn't override moduleNameMapper
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { router } = require('expo-router');
+
 import ServiceScreen from '@/app/booking/service';
 
 describe('ServiceScreen', () => {
+  beforeEach(() => {
+    router.push.mockClear();
+  });
+
   it('renders without crash', () => {
     const { root } = render(<ServiceScreen />);
     expect(root).toBeTruthy();
@@ -49,5 +53,15 @@ describe('ServiceScreen', () => {
     expect(getByText('Lockout Service')).toBeTruthy();
     expect(getByText('Fuel Delivery')).toBeTruthy();
     expect(getByText('Winch Recovery')).toBeTruthy();
+  });
+
+  it('selecting a service navigates to vehicle screen with service param', () => {
+    const { getByText } = render(<ServiceScreen />);
+    fireEvent.press(getByText('Flatbed Towing'));
+
+    expect(router.push).toHaveBeenCalledTimes(1);
+    expect(router.push).toHaveBeenCalledWith(
+      expect.objectContaining({ pathname: '/booking/vehicle', params: { service: 'FLATBED_TOWING' } }),
+    );
   });
 });
