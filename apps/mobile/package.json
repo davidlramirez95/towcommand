@@ -42,7 +42,12 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.0",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^13.3.3",
+    "@types/jest": "^30.0.0",
     "@types/react": "~18.3.0",
+    "jest-expo": "~52.0.6",
+    "react-test-renderer": "18.3.1",
     "typescript": "~5.3.0"
   }
 }
