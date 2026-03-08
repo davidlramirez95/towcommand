@@ -1,0 +1,44 @@
+{
+  "cli": {
+    "version": ">= 13.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://dev-api.towcommand.ph",
+        "EXPO_PUBLIC_WS_URL": "wss://dev-ws.towcommand.ph",
+        "EXPO_PUBLIC_COGNITO_USER_POOL_ID": "",
+        "EXPO_PUBLIC_COGNITO_CLIENT_ID": "",
+        "EXPO_PUBLIC_COGNITO_DOMAIN": "",
+        "EXPO_PUBLIC_MAPBOX_TOKEN": ""
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://dev-api.towcommand.ph",
+        "EXPO_PUBLIC_WS_URL": "wss://dev-ws.towcommand.ph",
+        "EXPO_PUBLIC_COGNITO_USER_POOL_ID": "",
+        "EXPO_PUBLIC_COGNITO_CLIENT_ID": "",
+        "EXPO_PUBLIC_COGNITO_DOMAIN": "",
+        "EXPO_PUBLIC_MAPBOX_TOKEN": ""
+      }
+    },
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://api.towcommand.ph",
+        "EXPO_PUBLIC_WS_URL": "wss://ws.towcommand.ph",
+        "EXPO_PUBLIC_COGNITO_USER_POOL_ID": "",
+        "EXPO_PUBLIC_COGNITO_CLIENT_ID": "",
+        "EXPO_PUBLIC_COGNITO_DOMAIN": "",
+        "EXPO_PUBLIC_MAPBOX_TOKEN": ""
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

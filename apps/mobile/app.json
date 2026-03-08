@@ -1,0 +1,66 @@
+{
+  "expo": {
+    "name": "TowCommand PH",
+    "slug": "towcommand-ph",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "towcommand",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0B1D33"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.towcommand.ph",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "TowCommand needs your location to find nearby tow trucks and track your service.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "TowCommand needs background location to broadcast your position as a provider.",
+        "NSCameraUsageDescription": "TowCommand needs camera access to capture vehicle condition photos.",
+        "NSPhotoLibraryUsageDescription": "TowCommand needs photo library access to upload vehicle photos."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0B1D33"
+      },
+      "package": "com.towcommand.ph",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "CAMERA"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow TowCommand to use your location for provider tracking."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow TowCommand to take photos for vehicle condition reports."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#00897B"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

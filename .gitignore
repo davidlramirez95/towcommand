@@ -4,9 +4,13 @@
 coverage.out
 coverage.html
 
-# Go binaries
+# Go binaries (Lambda build output at root)
 bootstrap
 *.exe
+/api-*
+/auth-*
+/trigger-*
+/ws-*
 
 # Go vendor (if used)
 # vendor/
@@ -33,6 +37,9 @@ terraform.tfstate*
 
 # Logs
 *.log
+
+# Node.js / pnpm
+node_modules/
 
 # Legacy Node.js (preserved in legacy/ for reference)
 legacy/node_modules/
