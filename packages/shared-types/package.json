@@ -1,0 +1,10 @@
+{
+  "name": "@towcommand/shared-types",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "generate": "echo 'OpenAPI type generation not yet configured. Hand-written types for now.'"
+  }
+}
