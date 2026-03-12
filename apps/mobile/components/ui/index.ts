@@ -1,4 +1,10 @@
+export { Avatar } from './Avatar';
+export { BackHeader } from './BackHeader';
+export { Badge } from './Badge';
 export { Button } from './Button';
 export { Card } from './Card';
+export { InfoTip } from './InfoTip';
 export { Input } from './Input';
-export { Badge } from './Badge';
+export { ProgressBar } from './ProgressBar';
+export { SectionLabel } from './SectionLabel';
+export { StatusPill } from './StatusPill';
