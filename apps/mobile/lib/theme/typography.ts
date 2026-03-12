@@ -1,5 +1,9 @@
 import { TextStyle } from 'react-native';
 
+/**
+ * Font family names registered by @expo-google-fonts/poppins.
+ * These names work on both native (via expo-font) and web (injected @font-face).
+ */
 export const fontFamily = {
   regular: 'Poppins_400Regular',
   semiBold: 'Poppins_600SemiBold',

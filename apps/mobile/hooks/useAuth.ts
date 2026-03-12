@@ -42,7 +42,7 @@ export function useAuth() {
         email: (claims?.email as string) ?? '',
         phone: (claims?.phone_number as string) ?? '',
         fullName: (claims?.name as string) ?? '',
-        userType: ((claims?.['custom:userType'] as string) ?? 'customer') as 'customer' | 'provider' | 'admin',
+        userType: ((claims?.['custom:user_type'] as string) ?? 'customer') as 'customer' | 'provider' | 'admin',
       });
     } catch {
       setUser(null);

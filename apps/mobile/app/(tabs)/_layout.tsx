@@ -1,7 +1,13 @@
 import { Tabs } from 'expo-router';
-import { View, StyleSheet } from 'react-native';
+import { Text } from 'react-native';
 import { colors } from '@/lib/theme/colors';
 import { fontFamily } from '@/lib/theme/typography';
+
+const TAB_ICONS: Record<string, string> = {
+  home: '🏠',
+  history: '📋',
+  profile: '👤',
+};
 
 export default function TabsLayout() {
   return (
@@ -26,45 +32,37 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, size }) => <TabIcon name="home" color={color} size={size} />,
+          tabBarIcon: ({ focused, size }) => (
+            <TabIcon name="home" focused={focused} size={size} />
+          ),
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
           title: 'Activity',
-          tabBarIcon: ({ color, size }) => <TabIcon name="history" color={color} size={size} />,
+          tabBarIcon: ({ focused, size }) => (
+            <TabIcon name="history" focused={focused} size={size} />
+          ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Account',
-          tabBarIcon: ({ color, size }) => <TabIcon name="profile" color={color} size={size} />,
+          tabBarIcon: ({ focused, size }) => (
+            <TabIcon name="profile" focused={focused} size={size} />
+          ),
         }}
       />
     </Tabs>
   );
 }
 
-/**
- * Minimal tab icons using View shapes.
- * Replace with proper SVG icons in production.
- */
-function TabIcon({ name, color, size }: { name: string; color: string; size: number }) {
+function TabIcon({ name, focused, size }: { name: string; focused: boolean; size: number }) {
   return (
-    <View
-      style={[
-        styles.iconPlaceholder,
-        { width: size, height: size, borderColor: color },
-      ]}
-    />
+    <Text style={{ fontSize: size, opacity: focused ? 1 : 0.4 }}>
+      {TAB_ICONS[name] ?? '•'}
+    </Text>
   );
 }
-
-const styles = StyleSheet.create({
-  iconPlaceholder: {
-    borderWidth: 2,
-    borderRadius: 6,
-  },
-});

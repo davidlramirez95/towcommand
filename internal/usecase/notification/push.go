@@ -130,11 +130,11 @@ func (r *PushNotificationRouter) sendPush(ctx context.Context, userID, title, me
 	if err != nil || len(tokens) == 0 {
 		return
 	}
-	for _, t := range tokens {
-		if err := r.push.SendPush(ctx, t.EndpointArn, title, message, nil); err != nil {
+	for i := range tokens {
+		if err := r.push.SendPush(ctx, tokens[i].EndpointArn, title, message, nil); err != nil {
 			slog.ErrorContext(ctx, "failed to send push notification",
 				"error", err,
-				"endpoint", t.EndpointArn,
+				"endpoint", tokens[i].EndpointArn,
 				"user_id", userID,
 			)
 		}
