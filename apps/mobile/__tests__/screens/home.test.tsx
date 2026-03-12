@@ -4,10 +4,9 @@
  * 2nd order concerns:
  * - firstName is derived from user?.fullName?.split(' ')[0].
  *   If fullName is null → split() crashes. If '' → empty greeting.
- *   Test all three cases: valid name, null, empty string.
  * - SOS button must always be visible and tappable (safety-critical).
- * - "Request a Tow" card navigates to booking/service.
- *   If navigation fails silently, user is stuck on home screen.
+ * - AI diagnosis card must be prominent (primary user action).
+ * - Quick services grid must render all 4 services.
  */
 import React from 'react';
 import { render } from '@testing-library/react-native';
@@ -23,7 +22,6 @@ jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: ({ children }: { children: React.ReactNode }) => children,
 }));
 
-// Home screen uses useAuth hook, not useAuthStore directly
 jest.mock('@/hooks/useAuth', () => ({
   useAuth: () => ({
     user: { id: 'u1', fullName: 'Juan Cruz', userType: 'customer' },
@@ -46,7 +44,6 @@ describe('HomeScreen', () => {
 
   it('shows greeting with first name', () => {
     const { getByText } = render(<HomeScreen />);
-    expect(getByText(/Mabuhay/)).toBeTruthy();
     expect(getByText(/Juan/)).toBeTruthy();
   });
 
@@ -55,13 +52,16 @@ describe('HomeScreen', () => {
     expect(getByText('SOS')).toBeTruthy();
   });
 
-  it('Request a Tow card is visible', () => {
+  it('AI diagnosis card is visible (primary action)', () => {
     const { getByText } = render(<HomeScreen />);
-    expect(getByText(/Request a Tow/i)).toBeTruthy();
+    expect(getByText(/wrong with your car/i)).toBeTruthy();
   });
 
-  it('Diagnose card is visible (AI feature entry point)', () => {
+  it('Quick services grid renders all 4 services', () => {
     const { getByText } = render(<HomeScreen />);
-    expect(getByText(/Diagnose/i)).toBeTruthy();
+    expect(getByText('Tow')).toBeTruthy();
+    expect(getByText('Fuel')).toBeTruthy();
+    expect(getByText('Jumpstart')).toBeTruthy();
+    expect(getByText('Mechanic')).toBeTruthy();
   });
 });

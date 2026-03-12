@@ -70,6 +70,13 @@ export default function RootLayout() {
               animation: 'fade',
             }}
           />
+          <Stack.Screen
+            name="typhoon"
+            options={{
+              presentation: 'fullScreenModal',
+              animation: 'fade',
+            }}
+          />
         </Stack>
       </View>
     </QueryClientProvider>

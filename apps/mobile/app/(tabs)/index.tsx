@@ -1,12 +1,18 @@
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { colors } from '@/lib/theme/colors';
 import { textStyles, fontFamily } from '@/lib/theme/typography';
 import { spacing, borderRadius } from '@/lib/theme/spacing';
 import { useAuth } from '@/hooks/useAuth';
+
+const QUICK_SERVICES = [
+  { icon: '🚛', label: 'Tow', color: '#FFF3EB' },
+  { icon: '⛽', label: 'Fuel', color: '#E8F8F0' },
+  { icon: '🔋', label: 'Jumpstart', color: '#EBF0FF' },
+  { icon: '🔧', label: 'Mechanic', color: '#FFF8E1' },
+];
 
 export default function HomeScreen() {
   const { user } = useAuth();
@@ -14,170 +20,208 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Mabuhay, {firstName}!</Text>
-          <Text style={styles.subtitle}>Need help on the road?</Text>
+      <ScrollView contentContainerStyle={styles.scroll}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.greetingSub}>Magandang hapon 🌤️</Text>
+            <Text style={styles.greeting}>{firstName}!</Text>
+          </View>
+          <View style={styles.headerRight}>
+            <Pressable style={styles.notifBtn}>
+              <Text style={{ fontSize: 16 }}>🔔</Text>
+            </Pressable>
+            <Pressable
+              style={styles.sosButton}
+              onPress={() => router.push('/sos')}
+              accessibilityLabel="Emergency SOS"
+              accessibilityRole="button"
+            >
+              <Text style={styles.sosText}>SOS</Text>
+            </Pressable>
+          </View>
         </View>
-        <Pressable
-          style={styles.sosButton}
-          onPress={() => router.push('/sos')}
-          accessibilityLabel="Emergency SOS"
-          accessibilityRole="button"
-        >
-          <Text style={styles.sosText}>SOS</Text>
-        </Pressable>
-      </View>
 
-      {/* Map Placeholder */}
-      <View style={styles.mapContainer}>
-        <View style={styles.mapPlaceholder}>
-          <Text style={styles.mapPlaceholderText}>Map loads here</Text>
-          <Text style={styles.mapPlaceholderSubtext}>Mapbox GL integration</Text>
-        </View>
-      </View>
-
-      {/* Quick Actions */}
-      <View style={styles.actions}>
-        <Card elevated onPress={() => router.push('/booking/service')} style={styles.mainAction}>
-          <Text style={styles.actionTitle}>Request a Tow</Text>
-          <Text style={styles.actionSubtitle}>Get help in minutes</Text>
+        {/* AI Diagnosis Card */}
+        <Card elevated onPress={() => router.push('/booking/diagnose')} style={styles.aiCard}>
+          <View style={styles.aiRow}>
+            <View style={styles.aiIcon}>
+              <Text style={{ fontSize: 26 }}>🤖</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.aiTitle}>What's wrong with your car?</Text>
+              <Text style={styles.aiSub}>AI will diagnose & find the cheapest fix</Text>
+            </View>
+            <Text style={{ fontSize: 20, color: colors.gold }}>→</Text>
+          </View>
         </Card>
 
-        <View style={styles.secondaryActions}>
-          <Card
-            onPress={() => router.push('/booking/diagnose')}
-            style={styles.secondaryAction}
-          >
-            <View style={styles.aiBadge}>
-              <Text style={styles.aiBadgeText}>AI</Text>
+        {/* Map Placeholder */}
+        <View style={styles.mapContainer}>
+          <View style={styles.mapPlaceholder}>
+            <Text style={{ position: 'absolute', top: 25, left: '25%', fontSize: 18 }}>🚛</Text>
+            <Text style={{ position: 'absolute', top: 80, left: '70%', fontSize: 16 }}>🚛</Text>
+            <Text style={{ position: 'absolute', top: 100, left: '35%', fontSize: 14, opacity: 0.6 }}>🚛</Text>
+            <View style={styles.mapPinOuter}>
+              <View style={styles.mapPinInner} />
             </View>
-            <Text style={styles.secondaryTitle}>Diagnose</Text>
-            <Text style={styles.secondarySubtitle}>What's wrong?</Text>
-          </Card>
-          <Card
-            onPress={() => router.push('/(tabs)/history')}
-            style={styles.secondaryAction}
-          >
-            <Text style={styles.secondaryTitle}>History</Text>
-            <Text style={styles.secondarySubtitle}>Past trips</Text>
-          </Card>
+          </View>
+          <View style={styles.mapBadge}>
+            <View style={styles.mapBadgeDot} />
+            <Text style={styles.mapBadgeText}>3 trucks nearby</Text>
+          </View>
         </View>
-      </View>
+
+        {/* Quick Services */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Quick Services</Text>
+          <Text style={styles.seeAll}>See all</Text>
+        </View>
+        <View style={styles.quickGrid}>
+          {QUICK_SERVICES.map((s) => (
+            <Pressable
+              key={s.label}
+              onPress={() => router.push('/booking/service')}
+              style={[styles.quickItem, { backgroundColor: s.color }]}
+            >
+              <Text style={{ fontSize: 24 }}>{s.icon}</Text>
+              <Text style={styles.quickLabel}>{s.label}</Text>
+            </Pressable>
+          ))}
+        </View>
+
+        {/* Suki Card */}
+        <Card style={styles.sukiCard}>
+          <View style={styles.sukiRow}>
+            <Text style={{ fontSize: 22 }}>⭐</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.sukiTitle}>Suki Silver Member</Text>
+              <Text style={styles.sukiSub}>2 more bookings for Gold • 5% off all services</Text>
+            </View>
+          </View>
+        </Card>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.bg,
-  },
+  container: { flex: 1, backgroundColor: colors.bg },
+  scroll: { paddingHorizontal: spacing[5], paddingBottom: spacing[3] },
+  // Header
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing[5],
-    paddingVertical: spacing[3],
+    paddingVertical: spacing[2],
+    marginBottom: spacing[3],
   },
-  greeting: {
-    ...textStyles.h2,
-    color: colors.navy,
-  },
-  subtitle: {
-    ...textStyles.bodySmall,
-    color: colors.grey,
-    marginTop: 2,
+  greetingSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.grey },
+  greeting: { ...textStyles.h2, color: colors.navy },
+  headerRight: { flexDirection: 'row', gap: 8 },
+  notifBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: borderRadius.md,
+    backgroundColor: colors.light,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   sosButton: {
-    width: 48,
-    height: 48,
-    borderRadius: borderRadius.full,
+    width: 36,
+    height: 36,
+    borderRadius: borderRadius.md,
     backgroundColor: colors.coral,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: colors.coral,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
-    elevation: 4,
   },
-  sosText: {
-    fontFamily: fontFamily.bold,
-    fontSize: 12,
-    color: colors.white,
-    letterSpacing: 1,
-  },
-  mapContainer: {
-    flex: 1,
-    marginHorizontal: spacing[4],
-    marginVertical: spacing[2],
-    borderRadius: borderRadius.xl,
-    overflow: 'hidden',
-  },
-  mapPlaceholder: {
-    flex: 1,
+  sosText: { fontFamily: fontFamily.bold, fontSize: 9, color: colors.white, letterSpacing: 0.5 },
+  // AI Card
+  aiCard: {
     backgroundColor: colors.navy,
+    borderColor: colors.navy,
+    marginBottom: spacing[3],
+    padding: 18,
+  },
+  aiRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  aiIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,107,53,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  mapPlaceholderText: {
-    ...textStyles.h3,
-    color: colors.white,
-    opacity: 0.5,
+  aiTitle: { fontFamily: fontFamily.bold, fontSize: 14, fontWeight: '700', color: colors.white },
+  aiSub: { fontFamily: fontFamily.regular, fontSize: 11, color: 'rgba(255,255,255,0.6)', marginTop: 2 },
+  // Map
+  mapContainer: {
+    height: 145,
+    borderRadius: 18,
+    overflow: 'hidden',
+    marginBottom: spacing[3],
+    backgroundColor: '#E8E4DE',
+    position: 'relative',
   },
-  mapPlaceholderSubtext: {
-    ...textStyles.caption,
-    color: colors.teal,
-    marginTop: spacing[1],
-  },
-  actions: {
-    paddingHorizontal: spacing[4],
-    paddingBottom: spacing[3],
-    gap: spacing[3],
-  },
-  mainAction: {
+  mapPlaceholder: { flex: 1, position: 'relative' },
+  mapPinOuter: {
+    position: 'absolute',
+    top: '35%',
+    left: '53%',
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     backgroundColor: colors.orange,
-    borderColor: colors.orange,
+    borderWidth: 3,
+    borderColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  actionTitle: {
-    ...textStyles.h3,
-    color: colors.white,
-  },
-  actionSubtitle: {
-    ...textStyles.bodySmall,
-    color: 'rgba(255,255,255,0.8)',
-    marginTop: 2,
-  },
-  secondaryActions: {
+  mapPinInner: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.white },
+  mapBadge: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'rgba(11,29,51,0.85)',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     flexDirection: 'row',
-    gap: spacing[3],
+    alignItems: 'center',
+    gap: 5,
   },
-  secondaryAction: {
+  mapBadgeDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.green },
+  mapBadgeText: { fontFamily: fontFamily.semiBold, fontSize: 10, fontWeight: '600', color: colors.white },
+  // Quick Services
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  sectionTitle: { fontFamily: fontFamily.bold, fontSize: 14, fontWeight: '700', color: colors.navy },
+  seeAll: { fontFamily: fontFamily.semiBold, fontSize: 11, fontWeight: '600', color: colors.orange },
+  quickGrid: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: spacing[4],
+  },
+  quickItem: {
     flex: 1,
-  },
-  aiBadge: {
-    backgroundColor: '#667eea',
-    borderRadius: 6,
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 14,
     paddingHorizontal: 8,
-    paddingVertical: 2,
-    alignSelf: 'flex-start',
-    marginBottom: spacing[2],
+    borderRadius: 14,
   },
-  aiBadgeText: {
-    fontFamily: fontFamily.bold,
-    fontSize: 8,
-    color: colors.white,
-    letterSpacing: 0.5,
+  quickLabel: { fontFamily: fontFamily.semiBold, fontSize: 10, fontWeight: '600', color: colors.navy },
+  // Suki
+  sukiCard: {
+    backgroundColor: colors.cream,
+    borderWidth: 1.5,
+    borderColor: 'rgba(245,166,35,0.2)',
   },
-  secondaryTitle: {
-    ...textStyles.label,
-    color: colors.navy,
-  },
-  secondarySubtitle: {
-    ...textStyles.caption,
-    color: colors.grey,
-    marginTop: 2,
-  },
+  sukiRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  sukiTitle: { fontFamily: fontFamily.bold, fontSize: 12, fontWeight: '700', color: colors.navy },
+  sukiSub: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.grey },
 });

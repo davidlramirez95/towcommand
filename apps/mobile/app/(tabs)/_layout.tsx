@@ -6,6 +6,7 @@ import { fontFamily } from '@/lib/theme/typography';
 const TAB_ICONS: Record<string, string> = {
   home: '🏠',
   history: '📋',
+  suki: '⭐',
   profile: '👤',
 };
 
@@ -43,6 +44,15 @@ export default function TabsLayout() {
           title: 'Activity',
           tabBarIcon: ({ focused, size }) => (
             <TabIcon name="history" focused={focused} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="suki"
+        options={{
+          title: 'Suki',
+          tabBarIcon: ({ focused, size }) => (
+            <TabIcon name="suki" focused={focused} size={size} />
           ),
         }}
       />
