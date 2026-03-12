@@ -7,21 +7,23 @@ test.describe('Home Screen', () => {
   });
 
   test('renders home screen with key elements', async ({ page }) => {
-    // Greeting (defaults to "there" when no user)
-    await expectText(page, 'Mabuhay');
-    await expectText(page, 'Need help on the road?');
+    // Greeting
+    await expectText(page, 'Magandang hapon');
 
     // SOS button
     await expect(page.getByLabel('Emergency SOS')).toBeVisible();
 
-    // Map placeholder
-    await expectText(page, 'Map loads here');
+    // AI Diagnosis card
+    await expectText(page, 'wrong with your car');
+    await expectText(page, 'AI will diagnose');
 
-    // Quick actions
-    await expectText(page, 'Request a Tow');
-    await expectText(page, 'Get help in minutes');
-    await expectText(page, 'Diagnose');
-    await expectText(page, 'History');
+    // Quick services
+    await expectText(page, 'Quick Services');
+    await expectText(page, 'Tow');
+    await expectText(page, 'Fuel');
+
+    // Map with trucks badge
+    await expectText(page, '3 trucks nearby');
 
     await takeEvidence(page, 'home-screen');
   });
@@ -32,10 +34,10 @@ test.describe('Home Screen', () => {
     await expect(sosButton).toBeEnabled();
   });
 
-  test('tab navigation is visible', async ({ page }) => {
-    // Tab bar should be present with Home, Activity, Account
+  test('tab navigation includes suki tab', async ({ page }) => {
     await expectText(page, 'Home');
     await expectText(page, 'Activity');
+    await expectText(page, 'Suki');
     await expectText(page, 'Account');
 
     await takeEvidence(page, 'home-tab-bar');
