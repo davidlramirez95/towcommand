@@ -234,6 +234,22 @@ Before completing any implementation, verify WITH EVIDENCE (show tool output):
 7. Web compatibility verified (no native-only imports without web fallback)
 8. 2nd-order check: does this screen/component change affect other screens subscribed to the same store?
 
+## E2E Evidence Requirement (MANDATORY)
+
+**Skill reference:** `.claude/skills/methodology/e2e-evidence-per-pr/SKILL.md`
+
+Every PR that touches `apps/mobile/` MUST include Playwright E2E screenshot evidence posted as a PR comment. This is non-negotiable.
+
+### What You Must Do Before Reporting Completion
+1. **Run E2E suite**: `cd apps/mobile && pnpm test:e2e` — show pass/fail output
+2. **Ensure `takeEvidence()` calls exist** in every spec you wrote or modified
+3. **New specs require screenshots** — if you create a new screen or component, write an E2E spec with `takeEvidence(page, 'descriptive-name')`
+4. **Upload screenshots** to `e2e-evidence-pr{N}` orphan branch
+5. **Post PR comment** with embedded screenshot tables (both iPhone 14 + Pixel 7)
+
+### 2nd-Order: Why Screenshots Matter More Than Test Output
+Test output says "passed." Screenshots show the *actual rendering* — a test can pass while the UI looks broken (wrong colors, overlapping text, missing elements that aren't asserted). Screenshots catch what assertions miss.
+
 ## Communication Style
 - Be direct and show code
 - Explain non-obvious architectural decisions

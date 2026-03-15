@@ -132,13 +132,22 @@ Write code that strictly adheres to these principles:
 4. If deployment fails, diagnose the issue, fix it, and retry
 5. **2nd-Order Deploy Check**: After deploy, verify that EXISTING features still work, not just the new one
 
-### PHASE 7: END-TO-END TESTS (MANDATORY)
+### PHASE 7: END-TO-END TESTS + SCREENSHOT EVIDENCE (MANDATORY)
+
+**Skill reference:** `.claude/skills/methodology/e2e-evidence-per-pr/SKILL.md`
+
 1. Write and/or run E2E tests against the deployed dev environment
 2. **Go backend E2E**: Integration tests or httptest-based tests against live endpoints
-3. **Mobile E2E**: Playwright against Expo Web with mobile device emulation
+3. **Mobile E2E**: `cd apps/mobile && pnpm test:e2e` — Playwright against Expo Web with mobile device emulation (iPhone 14 + Pixel 7)
 4. Test happy paths AND error paths
-5. Capture evidence: test output, screenshots, HTTP responses
-6. **Post E2E results to the PR** — this is a hard requirement for TowCommand
+5. **Every E2E spec MUST call `takeEvidence(page, 'name')`** for screenshot capture
+6. **Upload screenshots** to `e2e-evidence-pr{N}` orphan branch and post PR comment with embedded images
+7. The PR comment must include:
+   - Pass/fail summary with test count and runtime
+   - Screenshot tables organized by flow (core screens, booking flow, safety, provider, error states)
+   - Both device profiles represented
+   - New test suites highlighted
+8. **If there's no screenshot, it didn't happen** — this is a hard gate for TowCommand
 
 ## QUALITY GATES
 

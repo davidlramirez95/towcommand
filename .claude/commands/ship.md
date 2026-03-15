@@ -75,6 +75,7 @@ cd apps/mobile && pnpm expo export --platform web
 ### Phase 5: E2E Evidence (MANDATORY)
 
 **This is a hard requirement. Do NOT skip this phase.**
+**Skill reference:** `.claude/skills/methodology/e2e-evidence-per-pr/SKILL.md`
 
 #### Backend E2E
 ```bash
@@ -86,7 +87,31 @@ task test-e2e      # or run targeted integration tests
 cd apps/mobile && pnpm test:e2e   # Playwright against Expo web
 ```
 
-Capture screenshots, test results, or trace output as evidence.
+All E2E specs must call `takeEvidence(page, 'name')` for screenshot capture.
+
+#### Upload Screenshots & Post to PR
+
+```bash
+# Push screenshots to evidence branch
+git stash
+git checkout --orphan e2e-evidence-pr{NUMBER}
+git rm -rf .
+cp apps/mobile/e2e-results/*.png .
+git add *.png
+git commit -m "E2E evidence screenshots for PR #{NUMBER}"
+git push -f origin e2e-evidence-pr{NUMBER}
+git checkout {original-branch}
+git stash pop
+
+# Post PR comment with embedded screenshots (see skill for template)
+gh pr comment {NUMBER} --body "..."
+```
+
+Every PR comment MUST include:
+1. Pass/fail summary with test count and runtime
+2. Embedded screenshots organized by screen flow (tables with inline images)
+3. Both device profiles represented (iPhone 14 + Pixel 7)
+4. New test suites highlighted
 
 ### Phase 6: Commit
 
